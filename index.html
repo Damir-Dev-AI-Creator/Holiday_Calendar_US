@@ -1,0 +1,994 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Календарь праздников США и Онтарио 2026</title>
+    <style>
+        /* --- Общие стили --- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+            background: #f0f4f8; /* Очень светлый, мягкий фон */
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(45, 60, 80, 0.1);
+            overflow: hidden;
+        }
+
+        /* --- Стили шапки и заголовков (Мягкий Индиго) --- */
+        header {
+            background: linear-gradient(135deg, #5c6bc0 0%, #7986cb 100%); /* Софт-Индиго */
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 2.2em;
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            font-size: 1em;
+            opacity: 0.95;
+            margin-top: 5px;
+        }
+
+        .source-info {
+            font-size: 0.85em;
+            opacity: 0.85;
+            margin-top: 10px;
+            font-style: italic;
+        }
+
+        .controls {
+            padding: 25px;
+            background: #f8f9fa;
+            border-bottom: 1px solid #e0e6ed;
+            display: flex;
+            gap: 30px;
+            flex-wrap: wrap;
+        }
+
+        .control-group {
+            flex: 1 1 45%; 
+            min-width: 300px;
+        }
+
+        .control-group h3 {
+            color: #3f51b5;
+            margin-bottom: 12px;
+            font-size: 1.15em;
+        }
+        
+        /* --- Dropdown Стили (без изменений) --- */
+        .dropdown-container {
+            position: relative;
+            width: 100%;
+            max-width: 400px;
+            margin-bottom: 5px;
+        }
+
+        .dropdown-toggle {
+            width: 100%;
+            text-align: left;
+            background: #ffffff;
+            border: 1px solid #ced4da;
+            color: #495057;
+            padding: 10px 15px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: 400;
+            transition: background 0.2s, border-color 0.2s;
+        }
+
+        .dropdown-toggle:hover {
+            background: #f8f9fa;
+            border-color: #a0a8ae;
+        }
+
+        .dropdown-menu {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            width: 100%;
+            background: white;
+            border: 1px solid #ced4da;
+            border-radius: 6px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            z-index: 1000;
+            padding: 10px;
+            display: none; 
+            margin-top: 5px;
+        }
+
+        .dropdown-menu.show {
+            display: block;
+        }
+
+        #stateSearch {
+            width: 100%;
+            padding: 10px 10px;
+            margin-bottom: 10px;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            font-size: 0.95em;
+            outline: none;
+        }
+        
+        #stateSearch:focus {
+            border-color: #3f51b5;
+            box-shadow: 0 0 0 2px rgba(63, 81, 181, 0.2);
+        }
+
+        .state-grid-dropdown {
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+            max-height: 200px;
+            overflow-y: auto;
+            padding: 0;
+            border: none;
+            background: none;
+        }
+
+        .state-grid-dropdown .state-item {
+            padding: 8px 5px;
+            border-bottom: 1px solid #f1f1f1;
+            display: flex;
+            align-items: center;
+        }
+
+        .state-grid-dropdown .state-item:last-child {
+            border-bottom: none;
+        }
+
+        .state-item input {
+            margin-right: 7px;
+            cursor: pointer;
+            width: 16px;
+            height: 16px;
+        }
+
+        .state-item label {
+            cursor: pointer;
+            flex: 1;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 0.95em;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-weight: 600;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #4a69bd 0%, #3f51b5 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(63, 81, 181, 0.4);
+        }
+
+        .btn-secondary {
+            background: #90a4ae;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #78909c;
+        }
+        
+        .ontario-control {
+            border: 1px solid #cfd8dc;
+            padding: 15px;
+            border-radius: 8px;
+            background: #fff;
+        }
+        
+        .ontario-control label {
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            color: #3f51b5;
+        }
+
+        /* --- Стили для календаря (2 колонки) --- */
+        .calendar-view {
+            padding: 25px;
+        }
+        
+        .calendar-grid-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+
+        .month {
+            margin-bottom: 20px;
+            page-break-inside: avoid;
+            border: 1px solid #cfd8dc;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            overflow: hidden;
+        }
+
+        /* Заголовок месяца (Светло-Индиго) */
+        .month-header {
+            background: #c5cae9; 
+            color: #3949ab;
+            padding: 10px 15px;
+            font-size: 1.2em;
+            font-weight: 700;
+        }
+
+        .month-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            border-top: none;
+            overflow: hidden;
+        }
+
+        /* Заголовок дня (Единая высота для ровной сетки) */
+        .day-header {
+            background: #eceff1;
+            padding: 8px 5px;
+            height: 35px; /* Фиксированная высота */
+            line-height: 18px; 
+            text-align: center;
+            font-weight: 600;
+            font-size: 0.8em;
+            color: #546e7a;
+            border-right: 1px solid #cfd8dc;
+            border-bottom: 1px solid #cfd8dc;
+        }
+
+        .day-header:last-child {
+            border-right: none;
+        }
+
+        /* Ячейка дня (Единый размер и выравнивание) */
+        .day-cell {
+            min-height: 80px; /* Фиксированный минимальный размер */
+            padding: 5px;
+            border-right: 1px solid #eceff1;
+            border-bottom: 1px solid #eceff1;
+            background: white;
+            position: relative;
+            cursor: default;
+            display: flex; /* Для вертикального выравнивания контента */
+            flex-direction: column;
+        }
+
+        .day-cell.holiday-cell {
+            cursor: pointer;
+            transition: background 0.2s, box-shadow 0.2s;
+        }
+        
+        .day-cell.holiday-cell:hover {
+            background: #f5f5f5;
+            box-shadow: inset 0 0 0 1px #90a4ae;
+        }
+
+        .day-cell:nth-child(7n) {
+            border-right: none;
+        }
+
+        .day-number {
+            font-weight: 600;
+            font-size: 0.9em;
+            margin-bottom: 4px;
+            color: #374151;
+            flex-shrink: 0; /* Чтобы не сжимался при длинных праздниках */
+        }
+
+        .empty-day {
+            background: #f8f9fa;
+        }
+
+        /* Маркер праздника (Стилизация длинных названий) */
+        .holiday-marker {
+            padding: 2px 4px;
+            margin-top: 3px;
+            border-radius: 3px;
+            font-size: 0.7em;
+            line-height: 1.2;
+            overflow: hidden;
+            text-overflow: ellipsis; /* Добавляет многоточие */
+            white-space: nowrap; /* Гарантирует одну строку */
+        }
+
+        /* --- Контрастные, но мягкие цвета для праздников --- */
+        .federal-holiday {
+            background: #bbdefb; /* Светло-голубой */
+            color: #1a237e; /* Темно-синий текст */
+            border-left: 3px solid #1a237e;
+            font-weight: 600;
+        }
+
+        .state-holiday {
+            background: #ffe0b2; /* Светло-персиковый */
+            color: #e65100; /* Темно-оранжевый текст */
+            border-left: 3px solid #e65100;
+        }
+        
+        .ontario-holiday {
+            background: #e1bee7; /* Светло-лавандовый */
+            color: #4a148c; /* Темно-фиолетовый текст */
+            border-left: 3px solid #4a148c;
+            font-weight: 600;
+        }
+
+        .weekend {
+            background: #f8bbd0; /* Светло-розовый */
+        }
+        /* --- Конец Стили для календаря --- */
+
+        /* --- Стили для Легенды (Включая цветные квадраты) --- */
+        .legend {
+            display: flex;
+            gap: 20px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            margin-top: 30px;
+            flex-wrap: wrap;
+            border: 1px solid #e0e6ed;
+            align-items: center; /* Выравнивание элементов легенды по центру */
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.95em;
+        }
+        
+        .legend-box {
+            width: 18px;
+            height: 18px;
+            border-radius: 4px;
+            /* Стили рамки будут добавлены через inline-style для соответствия цветам праздников */
+        }
+        
+        /* --- Модальное окно (стили заголовков модального окна) --- */
+        .modal {
+            display: none; 
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.5);
+            padding-top: 60px;
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 5% auto; 
+            padding: 25px;
+            border-radius: 10px;
+            width: 80%;
+            max-width: 500px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            animation-name: animatetop;
+            animation-duration: 0.4s;
+        }
+        
+        @keyframes animatetop {
+            from {top:-300px; opacity:0} 
+            to {top:0; opacity:1}
+        }
+
+        .close-btn {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            line-height: 1;
+        }
+
+        .close-btn:hover,
+        .close-btn:focus {
+            color: #333;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        
+        .modal-content h4 {
+            color: #3f51b5;
+            border-bottom: 2px solid #e0e6ed;
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+        
+        .state-list-modal {
+            max-height: 250px;
+            overflow-y: auto;
+        }
+        
+        .state-list-modal p {
+            font-size: 0.95em;
+            padding: 5px 0;
+            border-bottom: 1px dotted #e0e6ed;
+            color: #546e7a;
+        }
+        
+        .state-list-modal p:last-child {
+            border-bottom: none;
+        }
+        
+        /* Стили заголовков внутри модального окна */
+        .modal-content h5 {
+            margin-top: 15px;
+            margin-bottom: 5px;
+            font-weight: 600;
+            padding-left: 5px;
+        }
+
+
+        @media (max-width: 992px) {
+            .calendar-grid-container {
+                grid-template-columns: 1fr;
+            }
+            .controls {
+                gap: 20px;
+            }
+            .control-group {
+                flex: 1 1 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Календарь праздников США и Канады 2026</h1>
+            <div class="subtitle">Федеральные, региональные и провинциальные нерабочие дни</div>
+            <div class="source-info">США: U.S. OPM; Онтарио: Ontario Ministry of Labour</div>
+        </header>
+
+        <div class="controls">
+            <div class="control-group">
+                <div class="control-section">
+                    <h3>Выберите штаты США:</h3>
+                    <div class="dropdown-container">
+                        <button class="dropdown-toggle" id="dropdownToggle" onclick="toggleDropdown()">
+                            Выбраны все штаты
+                        </button>
+                        <div class="dropdown-menu" id="dropdownMenu">
+                            <input type="text" id="stateSearch" placeholder="Поиск штата..." onkeyup="filterStates()">
+                            <div class="state-grid-dropdown" id="stateList">
+                                </div>
+                        </div>
+                    </div>
+                    <div class="button-group">
+                        <button class="btn-primary" onclick="selectAll('us')">Выбрать все США</button>
+                        <button class="btn-secondary" onclick="deselectAll('us')">Снять все США</button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="control-group">
+                <div class="control-section">
+                    <h3>Выберите провинции Канады:</h3>
+                    <div class="ontario-control">
+                        <label for="ontario_ON">
+                            <input type="checkbox" id="ontario_ON" value="ON" onchange="updateCalendar()" checked>
+                            Онтарио, Канада (ON)
+                        </label>
+                    </div>
+                </div>
+
+                <div class="button-group">
+                    <button class="btn-primary" onclick="updateCalendar()">Обновить календарь</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="calendar-view">
+            <div class="calendar-grid-container" id="calendarContainer"></div>
+            
+            <div class="legend">
+                <div class="legend-item">
+                    <div class="legend-box" style="background: #bbdefb; border: 1px solid #1a237e;"></div>
+                    <span>Федеральный праздник США</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-box" style="background: #ffe0b2; border: 1px solid #e65100;"></div>
+                    <span>Региональный праздник США</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-box" style="background: #e1bee7; border: 1px solid #4a148c;"></div>
+                    <span>Праздник Онтарио (Канада)</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-box" style="background: #f8bbd0; border: 1px solid #f48fb1;"></div>
+                    <span>Выходной день</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div id="holidayModal" class="modal">
+      <div class="modal-content">
+        <span class="close-btn" onclick="closeModal()">&times;</span>
+        <h4 id="modalHolidayDate"></h4>
+        <div id="modalHolidayDetails" class="state-list-modal">
+          </div>
+      </div>
+    </div>
+
+    <script>
+        const states = {
+            'WA': 'Washington', 'CA': 'California', 'NV': 'Nevada', 'TX': 'Texas',
+            'IL': 'Illinois', 'IN': 'Indiana', 'PA': 'Pennsylvania', 'NY': 'New York',
+            'DE': 'Delaware', 'FL': 'Florida', 'OR': 'Oregon', 'NC': 'North Carolina', 'SC': 'South Carolina'
+        };
+
+        const federalHolidays2026 = [
+            {date: '2026-01-01', name: 'New Year\'s Day', observed: '2026-01-01'},
+            {date: '2026-01-19', name: 'Martin Luther King Jr. Day', observed: '2026-01-19'},
+            {date: '2026-02-16', name: 'Presidents\' Day', observed: '2026-02-16'},
+            {date: '2026-05-25', name: 'Memorial Day', observed: '2026-05-25'},
+            {date: '2026-06-19', name: 'Juneteenth', observed: '2026-06-19'},
+            {date: '2026-07-04', name: 'Independence Day', observed: '2026-07-03'},
+            {date: '2026-09-07', name: 'Labor Day', observed: '2026-09-07'},
+            {date: '2026-10-12', name: 'Columbus Day', observed: '2026-10-12'},
+            {date: '2026-11-11', name: 'Veterans Day', observed: '2026-11-11'},
+            {date: '2026-11-26', name: 'Thanksgiving Day', observed: '2026-11-26'},
+            {date: '2026-12-25', name: 'Christmas Day', observed: '2026-12-25'}
+        ];
+
+        const stateSpecificHolidays = {
+            'TX': [
+                {date: '2026-01-19', name: 'Confederate Heroes Day'},
+                {date: '2026-03-02', name: 'Texas Independence Day'},
+                {date: '2026-04-21', name: 'San Jacinto Day'},
+                {date: '2026-11-27', name: 'Day After Thanksgiving'}
+            ],
+            'WA': [
+                {date: '2026-11-27', name: 'Day After Thanksgiving'}
+            ],
+            'CA': [
+                {date: '2026-03-31', name: 'Cesar Chavez Day'},
+                {date: '2026-11-27', name: 'Day After Thanksgiving'}
+            ],
+            'NV': [
+                {date: '2026-10-30', name: 'Nevada Day'}
+            ],
+            'IL': [
+                {date: '2026-02-12', name: 'Lincoln\'s Birthday'},
+                {date: '2026-11-03', name: 'Election Day'}
+            ],
+            'IN': [
+                {date: '2026-11-03', name: 'Election Day'}
+            ],
+            'PA': [
+                {date: '2026-11-03', name: 'Election Day'}
+            ],
+            'NY': [
+                {date: '2026-11-03', name: 'Election Day'}
+            ],
+            'DE': [
+                {date: '2026-04-03', name: 'Good Friday'},
+                {date: '2026-11-03', name: 'Election Day'}
+            ],
+            'FL': [
+                {date: '2026-04-03', name: 'Good Friday'}
+            ],
+            'OR': [
+                {date: '2026-11-27', name: 'Day After Thanksgiving'}
+            ],
+            'NC': [
+                {date: '2026-04-03', name: 'Good Friday'},
+                {date: '2026-11-27', name: 'Day After Thanksgiving'},
+                {date: '2026-12-24', name: 'Christmas Eve'},
+                {date: '2026-12-28', name: 'Christmas Holiday'}
+            ],
+            'SC': [
+                {date: '2026-04-03', name: 'Good Friday'},
+                {date: '2026-05-10', name: 'Confederate Memorial Day'},
+                {date: '2026-11-27', name: 'Day After Thanksgiving'}
+            ]
+        };
+
+        const ontarioHolidays2026 = [
+            {date: '2026-01-01', name: 'New Year\'s Day'},
+            {date: '2026-02-16', name: 'Family Day'},
+            {date: '2026-04-03', name: 'Good Friday'},
+            {date: '2026-05-18', name: 'Victoria Day'},
+            {date: '2026-07-01', name: 'Canada Day'},
+            {date: '2026-08-03', name: 'Civic Holiday'},
+            {date: '2026-09-07', name: 'Labour Day'},
+            {date: '2026-09-30', name: 'National Day for Truth and Reconciliation'},
+            {date: '2026-10-12', name: 'Thanksgiving Day'},
+            {date: '2026-11-11', name: 'Remembrance Day (often observed)'},
+            {date: '2026-12-25', name: 'Christmas Day'},
+            {date: '2026-12-26', name: 'Boxing Day', observed: '2026-12-28'}
+        ];
+
+        const monthNames = ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь',
+                           'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'];
+        const dayNames = ['Вс', 'Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб'];
+        
+        let allHolidaysData = []; 
+
+        // --- Dropdown и Поиск Функции ---
+        
+        function toggleDropdown() {
+            document.getElementById('dropdownMenu').classList.toggle('show');
+            if (document.getElementById('dropdownMenu').classList.contains('show')) {
+                document.getElementById('stateSearch').focus();
+            }
+        }
+
+        function updateDropdownToggleText(selectedCount) {
+            const totalStates = Object.keys(states).length;
+            const toggleButton = document.getElementById('dropdownToggle');
+            if (selectedCount === totalStates) {
+                toggleButton.textContent = 'Выбраны все штаты';
+            } else if (selectedCount > 0) {
+                toggleButton.textContent = `Выбрано штатов: ${selectedCount} / ${totalStates}`;
+            } else {
+                toggleButton.textContent = 'Выберите штаты...';
+            }
+        }
+
+        function initStates() {
+            const stateList = document.getElementById('stateList');
+            for (const [code, name] of Object.entries(states)) {
+                const div = document.createElement('div');
+                div.className = 'state-item';
+                div.setAttribute('data-state-name', name.toLowerCase());
+                div.innerHTML = `
+                    <input type="checkbox" id="state_${code}" value="${code}" onchange="handleStateChange()" checked>
+                    <label for="state_${code}">${name}</label>
+                `;
+                stateList.appendChild(div);
+            }
+            updateDropdownToggleText(Object.keys(states).length);
+        }
+
+        function handleStateChange() {
+            const selectedCount = getSelectedStates().length;
+            updateDropdownToggleText(selectedCount);
+        }
+
+        function filterStates() {
+            const filterValue = document.getElementById('stateSearch').value.toLowerCase();
+            const stateItems = document.querySelectorAll('.state-grid-dropdown .state-item');
+
+            stateItems.forEach(item => {
+                const stateName = item.getAttribute('data-state-name');
+                if (stateName.includes(filterValue)) {
+                    item.style.display = 'flex';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        }
+
+        document.addEventListener('click', function(event) {
+            const container = document.querySelector('.dropdown-container');
+            const menu = document.getElementById('dropdownMenu');
+            if (container && menu && !container.contains(event.target)) {
+                menu.classList.remove('show');
+            }
+        });
+        
+        // --- Основная Логика Календаря ---
+
+        function selectAll(country) {
+            if (country === 'us') {
+                document.querySelectorAll('#stateList input[type="checkbox"]').forEach(cb => cb.checked = true);
+                updateDropdownToggleText(Object.keys(states).length);
+            }
+            updateCalendar();
+        }
+
+        function deselectAll(country) {
+            if (country === 'us') {
+                document.querySelectorAll('#stateList input[type="checkbox"]').forEach(cb => cb.checked = false);
+                updateDropdownToggleText(0);
+            }
+            updateCalendar();
+        }
+
+        function getSelectedStates() {
+            const selected = [];
+            document.querySelectorAll('#stateList input[type="checkbox"]:checked').forEach(cb => {
+                selected.push(cb.value);
+            });
+            return selected;
+        }
+        
+        function isOntarioSelected() {
+            const ontarioCheckbox = document.getElementById('ontario_ON');
+            return ontarioCheckbox && ontarioCheckbox.checked;
+        }
+
+
+        function getHolidaysForStates(selectedStates) {
+            const holidays = [];
+
+            // 1. Добавляем федеральные праздники США (для всех выбранных штатов)
+            holidays.push(...federalHolidays2026.map(h => ({...h, isFederalUS: true})));
+
+            // 2. Добавляем региональные праздники США
+            selectedStates.forEach(state => {
+                if (stateSpecificHolidays[state]) {
+                    stateSpecificHolidays[state].forEach(holiday => {
+                        holidays.push({...holiday, state: state, stateName: states[state], isState: true});
+                    });
+                }
+            });
+
+            // 3. Добавляем праздники Онтарио
+            if (isOntarioSelected()) {
+                 ontarioHolidays2026.forEach(holiday => {
+                     holidays.push({...holiday, province: 'ON', provinceName: 'Онтарио', isOntario: true});
+                 });
+            }
+
+            allHolidaysData = holidays; 
+            return holidays;
+        }
+
+        function getDaysInMonth(year, month) {
+            return new Date(year, month + 1, 0).getDate();
+        }
+
+        function getFirstDayOfMonth(year, month) {
+            return new Date(year, month, 1).getDay();
+        }
+
+        function updateCalendar() {
+            const selectedStates = getSelectedStates();
+            const isONSelected = isOntarioSelected();
+            const container = document.getElementById('calendarContainer');
+
+            document.getElementById('dropdownMenu').classList.remove('show');
+
+            if (selectedStates.length === 0 && !isONSelected) {
+                container.innerHTML = '<div class="no-selection">Пожалуйста, выберите хотя бы один штат США или Онтарио для отображения праздников</div>';
+                return;
+            }
+
+            const holidays = getHolidaysForStates(selectedStates);
+            let html = '';
+
+            for (let month = 0; month < 12; month++) {
+                html += generateMonthCalendar(2026, month, holidays);
+            }
+
+            container.innerHTML = html;
+        }
+
+        function generateMonthCalendar(year, month, holidays) {
+            const daysInMonth = getDaysInMonth(year, month);
+            const firstDay = getFirstDayOfMonth(year, month);
+
+            let html = `<div class="month">
+                <div class="month-header">${monthNames[month]} ${year}</div>
+                <div class="month-grid">`;
+
+            dayNames.forEach(day => {
+                html += `<div class="day-header">${day}</div>`;
+            });
+
+            for (let i = 0; i < firstDay; i++) {
+                html += '<div class="day-cell empty-day"></div>';
+            }
+
+            for (let day = 1; day <= daysInMonth; day++) {
+                const date = new Date(year, month, day);
+                const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+                const dayOfWeek = date.getDay();
+                const isWeekend = dayOfWeek === 0 || dayOfWeek === 6;
+
+                const dayHolidays = holidays.filter(h =>
+                    h.date === dateStr || h.observed === dateStr
+                );
+
+                let cellClass = 'day-cell';
+                if (isWeekend) cellClass += ' weekend';
+                
+                if (dayHolidays.length > 0) {
+                    cellClass += ' holiday-cell';
+                    html += `<div class="${cellClass}" onclick="showHolidayDetails('${dateStr}')">`;
+                } else {
+                    html += `<div class="${cellClass}">`;
+                }
+
+                html += `<div class="day-number">${day}</div>`;
+
+                if (dayHolidays.length > 0) {
+                    const ontarioHolidays = dayHolidays.filter(h => h.isOntario);
+                    const federalUSHolidays = dayHolidays.filter(h => h.isFederalUS);
+                    const stateUSHolidays = dayHolidays.filter(h => h.isState);
+                    
+                    let primaryHoliday = null;
+                    let primaryClass = '';
+                    
+                    if (ontarioHolidays.length > 0) {
+                        primaryHoliday = ontarioHolidays[0];
+                        primaryClass = 'ontario-holiday';
+                    } else if (federalUSHolidays.length > 0) {
+                        primaryHoliday = federalUSHolidays[0];
+                        primaryClass = 'federal-holiday';
+                    } else if (stateUSHolidays.length > 0) {
+                        primaryHoliday = stateUSHolidays[0];
+                        primaryClass = 'state-holiday';
+                    }
+                    
+                    if (primaryHoliday) {
+                        let holidayLabel = primaryHoliday.name;
+                        // Обрезка названия для красоты (до 12 символов + '...')
+                        if (holidayLabel.length > 12) {
+                            holidayLabel = holidayLabel.substring(0, 10) + '...'; 
+                        }
+
+                        html += `<div class="holiday-marker ${primaryClass}">${holidayLabel}</div>`;
+                        
+                        // Количество оставшихся праздников
+                        const remainingCount = dayHolidays.length - 1;
+                        if (remainingCount > 0) {
+                             html += `<div class="holiday-marker state-holiday">+${remainingCount} еще</div>`;
+                        }
+                    }
+                }
+
+                html += '</div>';
+            }
+
+            html += '</div></div>';
+            return html;
+        }
+        
+        // --- Логика Модального окна ---
+
+        function showHolidayDetails(dateStr) {
+            const modal = document.getElementById('holidayModal');
+            const dateHeader = document.getElementById('modalHolidayDate');
+            const detailsBody = document.getElementById('modalHolidayDetails');
+            
+            const parts = dateStr.split('-');
+            const dateObj = new Date(parts[0], parts[1] - 1, parts[2]);
+            const dayOfWeek = dayNames[dateObj.getDay()];
+            const displayDate = `${dayOfWeek}, ${parts[2]} ${monthNames[parseInt(parts[1]) - 1]} ${parts[0]}`;
+            
+            dateHeader.textContent = `Праздники на ${displayDate}`;
+            
+            const holidaysOnDate = allHolidaysData.filter(h =>
+                h.date === dateStr || h.observed === dateStr
+            );
+            
+            const groupedHolidays = {};
+            
+            holidaysOnDate.forEach(h => {
+                let key, groupName, groupType;
+
+                if (h.isOntario) {
+                    groupName = `${h.name} (Онтарио, Канада)`;
+                    groupType = 'ontario';
+                    key = `${h.name}_ON`;
+                    
+                    if (!groupedHolidays[key]) groupedHolidays[key] = {name: groupName, type: groupType, locations: ['Онтарио']};
+
+                } else if (h.isFederalUS) {
+                    groupName = `${h.name} (Федеральный, США)`;
+                    groupType = 'federal_us';
+                    key = `${h.name}_FED`;
+                    
+                    if (!groupedHolidays[key]) groupedHolidays[key] = {name: groupName, type: groupType, locations: ['ВСЕ ВЫБРАННЫЕ ШТАТЫ']};
+
+                } else if (h.isState) {
+                    groupName = `${h.name} (Региональный, США)`;
+                    groupType = 'state_us';
+                    key = `${h.name}_${h.date}`;
+                    
+                    if (!groupedHolidays[key]) groupedHolidays[key] = {name: groupName, type: groupType, locations: []};
+                    if (!groupedHolidays[key].locations.includes(h.stateName)) {
+                        groupedHolidays[key].locations.push(h.stateName);
+                    }
+                }
+            });
+            
+            let detailsHtml = '';
+            
+            const sortedKeys = Object.keys(groupedHolidays).sort((a, b) => {
+                const typeA = groupedHolidays[a].type;
+                const typeB = groupedHolidays[b].type;
+                
+                if (typeA === 'ontario') return -1;
+                if (typeB === 'ontario') return 1;
+                if (typeA === 'federal_us' && typeB === 'state_us') return -1;
+                if (typeA === 'state_us' && typeB === 'federal_us') return 1;
+                return 0;
+            });
+
+            sortedKeys.forEach(key => {
+                const group = groupedHolidays[key];
+                let statesHtml = '';
+                let titleStyle = '';
+                let locationColor = '';
+
+                if (group.type === 'ontario') {
+                    locationColor = '#4a148c'; // Dark Purple
+                    statesHtml = `<p style="color: ${locationColor};">&#127464;&#127462; **${group.locations[0]}**</p>`;
+                    titleStyle = `color: ${locationColor};`;
+                } else if (group.type === 'federal_us') {
+                    locationColor = '#1a237e'; // Dark Blue
+                    statesHtml = `<p style="color: ${locationColor};">&#127482;&#127480; **Федеральный праздник, отмечается во всех выбранных штатах**</p>`;
+                    titleStyle = `color: ${locationColor};`;
+                } else {
+                    locationColor = '#e65100'; // Dark Orange
+                    statesHtml = group.locations.sort().map(state => `<p>&#10003; ${state}</p>`).join('');
+                    titleStyle = `color: ${locationColor};`;
+                }
+                
+                detailsHtml += `
+                    <h5 style="margin-top: 15px; margin-bottom: 5px; ${titleStyle}">${group.name}</h5>
+                    ${statesHtml}
+                `;
+            });
+            
+            detailsBody.innerHTML = detailsHtml;
+            modal.style.display = 'block';
+        }
+
+        function closeModal() {
+            document.getElementById('holidayModal').style.display = 'none';
+        }
+        
+        window.onclick = function(event) {
+            const modal = document.getElementById('holidayModal');
+            if (event.target === modal) {
+                closeModal();
+            }
+        };
+
+        window.onkeydown = function(event) {
+            if (event.key === "Escape") {
+                closeModal();
+            }
+        };
+
+
+        initStates();
+        updateCalendar();
+    </script>
+</body>
+</html>
