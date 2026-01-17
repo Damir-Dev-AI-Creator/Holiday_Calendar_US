@@ -5,6 +5,33 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Календарь праздников США и Онтарио 2026</title>
     <style>
+        /* --- CSS Variables для тем --- */
+        :root {
+            --bg-primary: #f0f4f8;
+            --bg-secondary: white;
+            --bg-controls: #f8f9fa;
+            --text-primary: #374151;
+            --text-secondary: #546e7a;
+            --border-color: #e0e6ed;
+            --border-light: #eceff1;
+            --shadow-light: rgba(45, 60, 80, 0.1);
+            --accent-color: #3f51b5;
+            --weekend-bg: #f8bbd0;
+        }
+
+        [data-theme="dark"] {
+            --bg-primary: #1a1d2e;
+            --bg-secondary: #252a3f;
+            --bg-controls: #2d3350;
+            --text-primary: #e8eaed;
+            --text-secondary: #b0b8c5;
+            --border-color: #3d4461;
+            --border-light: #2f3549;
+            --shadow-light: rgba(0, 0, 0, 0.3);
+            --accent-color: #7986cb;
+            --weekend-bg: #3d2f3f;
+        }
+
         /* --- Общие стили --- */
         * {
             margin: 0;
@@ -14,18 +41,21 @@
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
-            background: #f0f4f8; /* Очень светлый, мягкий фон */
+            background: var(--bg-primary);
             min-height: 100vh;
             padding: 20px;
+            transition: background 0.3s ease, color 0.3s ease;
+            color: var(--text-primary);
         }
 
         .container {
             max-width: 1400px;
             margin: 0 auto;
-            background: white;
+            background: var(--bg-secondary);
             border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(45, 60, 80, 0.1);
+            box-shadow: 0 10px 30px var(--shadow-light);
             overflow: hidden;
+            transition: background 0.3s ease, box-shadow 0.3s ease;
         }
 
         /* --- Стили шапки и заголовков (Мягкий Индиго) --- */
@@ -34,6 +64,36 @@
             color: white;
             padding: 30px;
             text-align: center;
+            position: relative;
+        }
+
+        .header-controls {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .theme-toggle, .lang-toggle {
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid rgba(255, 255, 255, 0.4);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: all 0.3s;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .theme-toggle:hover, .lang-toggle:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
         }
 
         h1 {
@@ -56,22 +116,163 @@
 
         .controls {
             padding: 25px;
-            background: #f8f9fa;
-            border-bottom: 1px solid #e0e6ed;
+            background: var(--bg-controls);
+            border-bottom: 1px solid var(--border-color);
             display: flex;
             gap: 30px;
             flex-wrap: wrap;
+            transition: background 0.3s ease, border-color 0.3s ease;
         }
 
         .control-group {
-            flex: 1 1 45%; 
+            flex: 1 1 45%;
             min-width: 300px;
         }
 
         .control-group h3 {
-            color: #3f51b5;
+            color: var(--accent-color);
             margin-bottom: 12px;
             font-size: 1.15em;
+        }
+
+        /* --- Статистическая панель --- */
+        .stats-panel {
+            padding: 20px 25px;
+            background: linear-gradient(135deg, var(--accent-color) 0%, #7986cb 100%);
+            color: white;
+            display: flex;
+            gap: 30px;
+            flex-wrap: wrap;
+            justify-content: space-around;
+            align-items: center;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 10px 20px;
+        }
+
+        .stat-number {
+            font-size: 2.5em;
+            font-weight: 700;
+            line-height: 1;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 0.9em;
+            opacity: 0.9;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* --- Режимы просмотра и поиск --- */
+        .view-controls {
+            padding: 20px 25px;
+            background: var(--bg-controls);
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .view-modes {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .view-mode-label {
+            font-weight: 600;
+            color: var(--text-secondary);
+            margin-right: 5px;
+        }
+
+        .view-mode-btn {
+            padding: 8px 16px;
+            background: var(--bg-secondary);
+            border: 2px solid var(--border-color);
+            color: var(--text-primary);
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9em;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+
+        .view-mode-btn:hover {
+            border-color: var(--accent-color);
+            background: var(--accent-color);
+            color: white;
+        }
+
+        .view-mode-btn.active {
+            background: var(--accent-color);
+            color: white;
+            border-color: var(--accent-color);
+        }
+
+        .search-container {
+            flex: 1;
+            min-width: 250px;
+            max-width: 400px;
+            position: relative;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 10px 40px 10px 15px;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 0.95em;
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            transition: all 0.2s;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 3px rgba(63, 81, 181, 0.1);
+        }
+
+        .search-icon {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-secondary);
+            pointer-events: none;
+        }
+
+        .filter-chips {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .filter-chip {
+            padding: 6px 12px;
+            background: var(--bg-secondary);
+            border: 2px solid var(--border-color);
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.85em;
+            font-weight: 600;
+            color: var(--text-primary);
+            transition: all 0.2s;
+        }
+
+        .filter-chip:hover {
+            border-color: var(--accent-color);
+        }
+
+        .filter-chip.active {
+            background: var(--accent-color);
+            color: white;
+            border-color: var(--accent-color);
         }
         
         /* --- Dropdown Стили (без изменений) --- */
@@ -85,20 +286,20 @@
         .dropdown-toggle {
             width: 100%;
             text-align: left;
-            background: #ffffff;
-            border: 1px solid #ced4da;
-            color: #495057;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
             padding: 10px 15px;
             border-radius: 6px;
             cursor: pointer;
             font-size: 1em;
             font-weight: 400;
-            transition: background 0.2s, border-color 0.2s;
+            transition: all 0.2s;
         }
 
         .dropdown-toggle:hover {
-            background: #f8f9fa;
-            border-color: #a0a8ae;
+            background: var(--bg-controls);
+            border-color: var(--accent-color);
         }
 
         .dropdown-menu {
@@ -106,13 +307,13 @@
             top: 100%;
             left: 0;
             width: 100%;
-            background: white;
-            border: 1px solid #ced4da;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
             border-radius: 6px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            box-shadow: 0 4px 12px var(--shadow-light);
             z-index: 1000;
             padding: 10px;
-            display: none; 
+            display: none;
             margin-top: 5px;
         }
 
@@ -124,14 +325,16 @@
             width: 100%;
             padding: 10px 10px;
             margin-bottom: 10px;
-            border: 1px solid #dee2e6;
+            border: 1px solid var(--border-color);
             border-radius: 4px;
             font-size: 0.95em;
             outline: none;
+            background: var(--bg-secondary);
+            color: var(--text-primary);
         }
-        
+
         #stateSearch:focus {
-            border-color: #3f51b5;
+            border-color: var(--accent-color);
             box-shadow: 0 0 0 2px rgba(63, 81, 181, 0.2);
         }
 
@@ -148,7 +351,7 @@
 
         .state-grid-dropdown .state-item {
             padding: 8px 5px;
-            border-bottom: 1px solid #f1f1f1;
+            border-bottom: 1px solid var(--border-light);
             display: flex;
             align-items: center;
         }
@@ -167,6 +370,7 @@
         .state-item label {
             cursor: pointer;
             flex: 1;
+            color: var(--text-primary);
         }
 
         .button-group {
@@ -206,19 +410,19 @@
         }
         
         .ontario-control {
-            border: 1px solid #cfd8dc;
+            border: 1px solid var(--border-color);
             padding: 15px;
             border-radius: 8px;
-            background: #fff;
+            background: var(--bg-secondary);
         }
-        
+
         .ontario-control label {
             font-weight: 500;
             display: flex;
             align-items: center;
             gap: 8px;
             cursor: pointer;
-            color: #3f51b5;
+            color: var(--accent-color);
         }
 
         /* --- Стили для календаря (2 колонки) --- */
@@ -235,19 +439,25 @@
         .month {
             margin-bottom: 20px;
             page-break-inside: avoid;
-            border: 1px solid #cfd8dc;
+            border: 1px solid var(--border-color);
             border-radius: 8px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            box-shadow: 0 2px 5px var(--shadow-light);
             overflow: hidden;
+            background: var(--bg-secondary);
         }
 
         /* Заголовок месяца (Светло-Индиго) */
         .month-header {
-            background: #c5cae9; 
+            background: linear-gradient(135deg, #c5cae9 0%, #b3b9e5 100%);
             color: #3949ab;
             padding: 10px 15px;
             font-size: 1.2em;
             font-weight: 700;
+        }
+
+        [data-theme="dark"] .month-header {
+            background: linear-gradient(135deg, #3d4461 0%, #4a5072 100%);
+            color: #b3bce8;
         }
 
         .month-grid {
@@ -259,16 +469,16 @@
 
         /* Заголовок дня (Единая высота для ровной сетки) */
         .day-header {
-            background: #eceff1;
+            background: var(--bg-controls);
             padding: 8px 5px;
             height: 35px; /* Фиксированная высота */
-            line-height: 18px; 
+            line-height: 18px;
             text-align: center;
             font-weight: 600;
             font-size: 0.8em;
-            color: #546e7a;
-            border-right: 1px solid #cfd8dc;
-            border-bottom: 1px solid #cfd8dc;
+            color: var(--text-secondary);
+            border-right: 1px solid var(--border-color);
+            border-bottom: 1px solid var(--border-color);
         }
 
         .day-header:last-child {
@@ -279,9 +489,9 @@
         .day-cell {
             min-height: 80px; /* Фиксированный минимальный размер */
             padding: 5px;
-            border-right: 1px solid #eceff1;
-            border-bottom: 1px solid #eceff1;
-            background: white;
+            border-right: 1px solid var(--border-light);
+            border-bottom: 1px solid var(--border-light);
+            background: var(--bg-secondary);
             position: relative;
             cursor: default;
             display: flex; /* Для вертикального выравнивания контента */
@@ -292,10 +502,10 @@
             cursor: pointer;
             transition: background 0.2s, box-shadow 0.2s;
         }
-        
+
         .day-cell.holiday-cell:hover {
-            background: #f5f5f5;
-            box-shadow: inset 0 0 0 1px #90a4ae;
+            background: var(--bg-controls);
+            box-shadow: inset 0 0 0 1px var(--accent-color);
         }
 
         .day-cell:nth-child(7n) {
@@ -306,12 +516,13 @@
             font-weight: 600;
             font-size: 0.9em;
             margin-bottom: 4px;
-            color: #374151;
+            color: var(--text-primary);
             flex-shrink: 0; /* Чтобы не сжимался при длинных праздниках */
         }
 
         .empty-day {
-            background: #f8f9fa;
+            background: var(--bg-controls);
+            opacity: 0.5;
         }
 
         /* Маркер праздника (Стилизация длинных названий) */
@@ -348,8 +559,172 @@
         }
 
         .weekend {
-            background: #f8bbd0; /* Светло-розовый */
+            background: var(--weekend-bg);
         }
+
+        /* --- Режимы просмотра: Список и Таблица --- */
+        .calendar-grid-container {
+            display: none;
+        }
+
+        .calendar-grid-container.active {
+            display: grid;
+        }
+
+        .list-view {
+            display: none;
+        }
+
+        .list-view.active {
+            display: block;
+        }
+
+        .holiday-list {
+            padding: 20px;
+        }
+
+        .holiday-list-item {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 15px 20px;
+            margin-bottom: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.2s;
+        }
+
+        .holiday-list-item:hover {
+            box-shadow: 0 2px 8px var(--shadow-light);
+            transform: translateY(-2px);
+        }
+
+        .holiday-date-info {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .holiday-date-box {
+            background: var(--accent-color);
+            color: white;
+            padding: 10px 15px;
+            border-radius: 8px;
+            text-align: center;
+            min-width: 80px;
+        }
+
+        .holiday-day {
+            font-size: 1.8em;
+            font-weight: 700;
+            line-height: 1;
+        }
+
+        .holiday-month {
+            font-size: 0.9em;
+            opacity: 0.9;
+            text-transform: uppercase;
+        }
+
+        .holiday-details {
+            flex: 1;
+        }
+
+        .holiday-name {
+            font-size: 1.1em;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 4px;
+        }
+
+        .holiday-type {
+            font-size: 0.85em;
+            color: var(--text-secondary);
+        }
+
+        .table-view {
+            display: none;
+        }
+
+        .table-view.active {
+            display: block;
+        }
+
+        .holiday-table {
+            width: 100%;
+            padding: 20px;
+        }
+
+        .holiday-table table {
+            width: 100%;
+            border-collapse: collapse;
+            background: var(--bg-secondary);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .holiday-table th {
+            background: var(--accent-color);
+            color: white;
+            padding: 12px 15px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 0.95em;
+        }
+
+        .holiday-table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid var(--border-light);
+            color: var(--text-primary);
+        }
+
+        .holiday-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .holiday-table tr:hover {
+            background: var(--bg-controls);
+        }
+
+        .table-badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 0.8em;
+            font-weight: 600;
+        }
+
+        .badge-federal {
+            background: #bbdefb;
+            color: #1a237e;
+        }
+
+        .badge-state {
+            background: #ffe0b2;
+            color: #e65100;
+        }
+
+        .badge-ontario {
+            background: #e1bee7;
+            color: #4a148c;
+        }
+
+        [data-theme="dark"] .badge-federal {
+            background: #1e3a5f;
+            color: #90caf9;
+        }
+
+        [data-theme="dark"] .badge-state {
+            background: #4a2c0a;
+            color: #ffb74d;
+        }
+
+        [data-theme="dark"] .badge-ontario {
+            background: #3a1f47;
+            color: #ce93d8;
+        }
+
         /* --- Конец Стили для календаря --- */
 
         /* --- Стили для Легенды (Включая цветные квадраты) --- */
@@ -357,21 +732,22 @@
             display: flex;
             gap: 20px;
             padding: 20px;
-            background: #f8f9fa;
+            background: var(--bg-controls);
             border-radius: 8px;
             margin-top: 30px;
             flex-wrap: wrap;
-            border: 1px solid #e0e6ed;
+            border: 1px solid var(--border-color);
             align-items: center; /* Выравнивание элементов легенды по центру */
         }
-        
+
         .legend-item {
             display: flex;
             align-items: center;
             gap: 8px;
             font-size: 0.95em;
+            color: var(--text-primary);
         }
-        
+
         .legend-box {
             width: 18px;
             height: 18px;
@@ -394,15 +770,16 @@
         }
 
         .modal-content {
-            background-color: #fefefe;
-            margin: 5% auto; 
+            background-color: var(--bg-secondary);
+            margin: 5% auto;
             padding: 25px;
             border-radius: 10px;
             width: 80%;
             max-width: 500px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            box-shadow: 0 5px 15px var(--shadow-light);
             animation-name: animatetop;
             animation-duration: 0.4s;
+            border: 1px solid var(--border-color);
         }
         
         @keyframes animatetop {
@@ -411,7 +788,7 @@
         }
 
         .close-btn {
-            color: #aaa;
+            color: var(--text-secondary);
             float: right;
             font-size: 28px;
             font-weight: bold;
@@ -420,35 +797,35 @@
 
         .close-btn:hover,
         .close-btn:focus {
-            color: #333;
+            color: var(--text-primary);
             text-decoration: none;
             cursor: pointer;
         }
-        
+
         .modal-content h4 {
-            color: #3f51b5;
-            border-bottom: 2px solid #e0e6ed;
+            color: var(--accent-color);
+            border-bottom: 2px solid var(--border-color);
             padding-bottom: 10px;
             margin-bottom: 15px;
             font-size: 1.3em;
         }
-        
+
         .state-list-modal {
             max-height: 250px;
             overflow-y: auto;
         }
-        
+
         .state-list-modal p {
             font-size: 0.95em;
             padding: 5px 0;
-            border-bottom: 1px dotted #e0e6ed;
-            color: #546e7a;
+            border-bottom: 1px dotted var(--border-color);
+            color: var(--text-secondary);
         }
-        
+
         .state-list-modal p:last-child {
             border-bottom: none;
         }
-        
+
         /* Стили заголовков внутри модального окна */
         .modal-content h5 {
             margin-top: 15px;
@@ -468,21 +845,152 @@
             .control-group {
                 flex: 1 1 100%;
             }
+            .stats-panel {
+                flex-direction: column;
+                gap: 15px;
+            }
+            .stat-item {
+                width: 100%;
+            }
+            .view-controls {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .view-modes {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            .search-container {
+                max-width: 100%;
+            }
+            .filter-chips {
+                justify-content: center;
+            }
+            .header-controls {
+                position: static;
+                justify-content: center;
+                margin-bottom: 15px;
+            }
+        }
+
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 1.5em;
+            }
+            .subtitle {
+                font-size: 0.9em;
+            }
+            .source-info {
+                font-size: 0.75em;
+            }
+            .stat-number {
+                font-size: 2em;
+            }
+            .stat-label {
+                font-size: 0.8em;
+            }
+            .view-mode-btn {
+                padding: 6px 12px;
+                font-size: 0.85em;
+            }
+            .holiday-list-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+            .holiday-date-info {
+                flex-direction: column;
+                gap: 10px;
+                width: 100%;
+            }
+            .holiday-table table {
+                font-size: 0.85em;
+            }
+            .holiday-table th,
+            .holiday-table td {
+                padding: 8px 10px;
+            }
         }
     </style>
 </head>
 <body>
     <div class="container">
         <header>
-            <h1>Календарь праздников США и Канады 2026</h1>
-            <div class="subtitle">Федеральные, региональные и провинциальные нерабочие дни</div>
-            <div class="source-info">США: U.S. OPM; Онтарио: Ontario Ministry of Labour</div>
+            <div class="header-controls">
+                <button class="theme-toggle" onclick="toggleTheme()" id="themeToggle">
+                    <span id="themeIcon">🌙</span>
+                    <span id="themeText">Темная</span>
+                </button>
+                <button class="lang-toggle" onclick="toggleLanguage()" id="langToggle">
+                    <span>🌐</span>
+                    <span id="langText">EN</span>
+                </button>
+            </div>
+            <h1 id="mainTitle">Календарь праздников США и Канады 2026</h1>
+            <div class="subtitle" id="subtitle">Федеральные, региональные и провинциальные нерабочие дни</div>
+            <div class="source-info" id="sourceInfo">США: U.S. OPM; Онтарио: Ontario Ministry of Labour</div>
         </header>
+
+        <div class="stats-panel" id="statsPanel">
+            <div class="stat-item">
+                <div class="stat-number" id="totalHolidays">0</div>
+                <div class="stat-label" id="statLabel1">Всего праздников</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number" id="federalCount">0</div>
+                <div class="stat-label" id="statLabel2">Федеральных (US)</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number" id="regionalCount">0</div>
+                <div class="stat-label" id="statLabel3">Региональных (US)</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number" id="ontarioCount">0</div>
+                <div class="stat-label" id="statLabel4">Онтарио (CA)</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number" id="longWeekends">0</div>
+                <div class="stat-label" id="statLabel5">Длинных уикендов</div>
+            </div>
+        </div>
+
+        <div class="view-controls">
+            <div class="view-modes">
+                <span class="view-mode-label" id="viewModeLabel">Режим:</span>
+                <button class="view-mode-btn active" onclick="setViewMode('grid')" id="viewGrid">
+                    <span>📅</span> <span id="viewGridText">Календарь</span>
+                </button>
+                <button class="view-mode-btn" onclick="setViewMode('list')" id="viewList">
+                    <span>📋</span> <span id="viewListText">Список</span>
+                </button>
+                <button class="view-mode-btn" onclick="setViewMode('table')" id="viewTable">
+                    <span>📊</span> <span id="viewTableText">Таблица</span>
+                </button>
+            </div>
+            <div class="search-container">
+                <input type="text" id="holidaySearch" class="search-input" placeholder="Поиск праздников..." oninput="filterHolidays()">
+                <span class="search-icon">🔍</span>
+            </div>
+            <div class="filter-chips">
+                <div class="filter-chip active" onclick="toggleFilter('all')" id="filterAll" data-filter="all">
+                    <span id="filterAllText">Все</span>
+                </div>
+                <div class="filter-chip" onclick="toggleFilter('federal')" id="filterFederal" data-filter="federal">
+                    <span id="filterFederalText">Федеральные</span>
+                </div>
+                <div class="filter-chip" onclick="toggleFilter('state')" id="filterState" data-filter="state">
+                    <span id="filterStateText">Региональные</span>
+                </div>
+                <div class="filter-chip" onclick="toggleFilter('ontario')" id="filterOntario" data-filter="ontario">
+                    <span id="filterOntarioText">Онтарио</span>
+                </div>
+            </div>
+        </div>
 
         <div class="controls">
             <div class="control-group">
                 <div class="control-section">
-                    <h3>Выберите штаты США:</h3>
+                    <h3 id="selectStatesTitle">Выберите штаты США:</h3>
                     <div class="dropdown-container">
                         <button class="dropdown-toggle" id="dropdownToggle" onclick="toggleDropdown()">
                             Выбраны все штаты
@@ -494,17 +1002,17 @@
                         </div>
                     </div>
                     <div class="button-group">
-                        <button class="btn-primary" onclick="selectAll('us')">Выбрать все США</button>
-                        <button class="btn-secondary" onclick="deselectAll('us')">Снять все США</button>
+                        <button class="btn-primary" onclick="selectAll('us')" id="btnSelectAll">Выбрать все США</button>
+                        <button class="btn-secondary" onclick="deselectAll('us')" id="btnDeselectAll">Снять все США</button>
                     </div>
                 </div>
             </div>
-            
+
             <div class="control-group">
                 <div class="control-section">
-                    <h3>Выберите провинции Канады:</h3>
+                    <h3 id="selectProvincesTitle">Выберите провинции Канады:</h3>
                     <div class="ontario-control">
-                        <label for="ontario_ON">
+                        <label for="ontario_ON" id="ontarioLabel">
                             <input type="checkbox" id="ontario_ON" value="ON" onchange="updateCalendar()" checked>
                             Онтарио, Канада (ON)
                         </label>
@@ -512,30 +1020,38 @@
                 </div>
 
                 <div class="button-group">
-                    <button class="btn-primary" onclick="updateCalendar()">Обновить календарь</button>
+                    <button class="btn-primary" onclick="updateCalendar()" id="btnUpdateCalendar">Обновить календарь</button>
                 </div>
             </div>
         </div>
 
         <div class="calendar-view">
-            <div class="calendar-grid-container" id="calendarContainer"></div>
-            
+            <div class="calendar-grid-container active" id="calendarContainer"></div>
+
+            <div class="list-view" id="listContainer">
+                <div class="holiday-list" id="holidayList"></div>
+            </div>
+
+            <div class="table-view" id="tableContainer">
+                <div class="holiday-table" id="holidayTable"></div>
+            </div>
+
             <div class="legend">
                 <div class="legend-item">
                     <div class="legend-box" style="background: #bbdefb; border: 1px solid #1a237e;"></div>
-                    <span>Федеральный праздник США</span>
+                    <span id="legendFederal">Федеральный праздник США</span>
                 </div>
                 <div class="legend-item">
                     <div class="legend-box" style="background: #ffe0b2; border: 1px solid #e65100;"></div>
-                    <span>Региональный праздник США</span>
+                    <span id="legendState">Региональный праздник США</span>
                 </div>
                 <div class="legend-item">
                     <div class="legend-box" style="background: #e1bee7; border: 1px solid #4a148c;"></div>
-                    <span>Праздник Онтарио (Канада)</span>
+                    <span id="legendOntario">Праздник Онтарио (Канада)</span>
                 </div>
                 <div class="legend-item">
                     <div class="legend-box" style="background: #f8bbd0; border: 1px solid #f48fb1;"></div>
-                    <span>Выходной день</span>
+                    <span id="legendWeekend">Выходной день</span>
                 </div>
             </div>
         </div>
@@ -551,6 +1067,92 @@
     </div>
 
     <script>
+        // --- Глобальные переменные ---
+        let currentLanguage = localStorage.getItem('language') || 'ru';
+        let currentTheme = localStorage.getItem('theme') || 'light';
+        let currentViewMode = localStorage.getItem('viewMode') || 'grid';
+        let activeFilter = 'all';
+
+        // --- Объект переводов ---
+        const translations = {
+            ru: {
+                mainTitle: 'Календарь праздников США и Канады 2026',
+                subtitle: 'Федеральные, региональные и провинциальные нерабочие дни',
+                sourceInfo: 'США: U.S. OPM; Онтарио: Ontario Ministry of Labour',
+                themeLight: 'Светлая',
+                themeDark: 'Темная',
+                statLabel1: 'Всего праздников',
+                statLabel2: 'Федеральных (US)',
+                statLabel3: 'Региональных (US)',
+                statLabel4: 'Онтарио (CA)',
+                statLabel5: 'Длинных уикендов',
+                viewModeLabel: 'Режим:',
+                viewGridText: 'Календарь',
+                viewListText: 'Список',
+                viewTableText: 'Таблица',
+                searchPlaceholder: 'Поиск праздников...',
+                filterAllText: 'Все',
+                filterFederalText: 'Федеральные',
+                filterStateText: 'Региональные',
+                filterOntarioText: 'Онтарио',
+                selectStates: 'Выберите штаты США:',
+                selectProvinces: 'Выберите провинции Канады:',
+                allStatesSelected: 'Выбраны все штаты',
+                statesSelected: 'Выбрано штатов',
+                selectStatesPlaceholder: 'Выберите штаты...',
+                selectAllUS: 'Выбрать все США',
+                deselectAllUS: 'Снять все США',
+                updateCalendar: 'Обновить календарь',
+                ontarioLabel: 'Онтарио, Канада (ON)',
+                legendFederal: 'Федеральный праздник США',
+                legendState: 'Региональный праздник США',
+                legendOntario: 'Праздник Онтарио (Канада)',
+                legendWeekend: 'Выходной день',
+                monthNames: ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'],
+                dayNames: ['Вс', 'Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб'],
+                tableHeaders: ['Дата', 'День недели', 'Название', 'Тип', 'Регион'],
+                holidayType: {federal: 'Федеральный (US)', state: 'Региональный (US)', ontario: 'Онтарио (CA)'}
+            },
+            en: {
+                mainTitle: 'US & Canada Holiday Calendar 2026',
+                subtitle: 'Federal, State and Provincial Holidays',
+                sourceInfo: 'USA: U.S. OPM; Ontario: Ontario Ministry of Labour',
+                themeLight: 'Light',
+                themeDark: 'Dark',
+                statLabel1: 'Total Holidays',
+                statLabel2: 'Federal (US)',
+                statLabel3: 'Regional (US)',
+                statLabel4: 'Ontario (CA)',
+                statLabel5: 'Long Weekends',
+                viewModeLabel: 'View:',
+                viewGridText: 'Calendar',
+                viewListText: 'List',
+                viewTableText: 'Table',
+                searchPlaceholder: 'Search holidays...',
+                filterAllText: 'All',
+                filterFederalText: 'Federal',
+                filterStateText: 'Regional',
+                filterOntarioText: 'Ontario',
+                selectStates: 'Select US States:',
+                selectProvinces: 'Select Canadian Provinces:',
+                allStatesSelected: 'All states selected',
+                statesSelected: 'States selected',
+                selectStatesPlaceholder: 'Select states...',
+                selectAllUS: 'Select all US',
+                deselectAllUS: 'Deselect all US',
+                updateCalendar: 'Update Calendar',
+                ontarioLabel: 'Ontario, Canada (ON)',
+                legendFederal: 'US Federal Holiday',
+                legendState: 'US Regional Holiday',
+                legendOntario: 'Ontario Holiday (Canada)',
+                legendWeekend: 'Weekend',
+                monthNames: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+                dayNames: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
+                tableHeaders: ['Date', 'Day of Week', 'Name', 'Type', 'Region'],
+                holidayType: {federal: 'Federal (US)', state: 'Regional (US)', ontario: 'Ontario (CA)'}
+            }
+        };
+
         const states = {
             'WA': 'Washington', 'CA': 'California', 'NV': 'Nevada', 'TX': 'Texas',
             'IL': 'Illinois', 'IN': 'Indiana', 'PA': 'Pennsylvania', 'NY': 'New York',
@@ -636,11 +1238,322 @@
             {date: '2026-12-26', name: 'Boxing Day', observed: '2026-12-28'}
         ];
 
-        const monthNames = ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь',
+        let monthNames = ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь',
                            'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'];
-        const dayNames = ['Вс', 'Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб'];
-        
-        let allHolidaysData = []; 
+        let dayNames = ['Вс', 'Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб'];
+
+        let allHolidaysData = [];
+
+        // --- Функции переключения темы и языка ---
+
+        function toggleTheme() {
+            currentTheme = currentTheme === 'light' ? 'dark' : 'light';
+            document.documentElement.setAttribute('data-theme', currentTheme);
+            localStorage.setItem('theme', currentTheme);
+            updateThemeButton();
+        }
+
+        function updateThemeButton() {
+            const icon = document.getElementById('themeIcon');
+            const text = document.getElementById('themeText');
+            const t = translations[currentLanguage];
+            if (currentTheme === 'dark') {
+                icon.textContent = '☀️';
+                text.textContent = t.themeLight;
+            } else {
+                icon.textContent = '🌙';
+                text.textContent = t.themeDark;
+            }
+        }
+
+        function toggleLanguage() {
+            currentLanguage = currentLanguage === 'ru' ? 'en' : 'ru';
+            localStorage.setItem('language', currentLanguage);
+            updateLanguage();
+            updateCalendar();
+        }
+
+        function updateLanguage() {
+            const t = translations[currentLanguage];
+            document.getElementById('langText').textContent = currentLanguage === 'ru' ? 'EN' : 'RU';
+            document.getElementById('mainTitle').textContent = t.mainTitle;
+            document.getElementById('subtitle').textContent = t.subtitle;
+            document.getElementById('sourceInfo').textContent = t.sourceInfo;
+
+            // Stats labels
+            for (let i = 1; i <= 5; i++) {
+                document.getElementById(`statLabel${i}`).textContent = t[`statLabel${i}`];
+            }
+
+            // View mode labels
+            document.getElementById('viewModeLabel').textContent = t.viewModeLabel;
+            document.getElementById('viewGridText').textContent = t.viewGridText;
+            document.getElementById('viewListText').textContent = t.viewListText;
+            document.getElementById('viewTableText').textContent = t.viewTableText;
+
+            // Search placeholder
+            document.getElementById('holidaySearch').placeholder = t.searchPlaceholder;
+
+            // Filter chips
+            document.getElementById('filterAllText').textContent = t.filterAllText;
+            document.getElementById('filterFederalText').textContent = t.filterFederalText;
+            document.getElementById('filterStateText').textContent = t.filterStateText;
+            document.getElementById('filterOntarioText').textContent = t.filterOntarioText;
+
+            // Legend
+            document.getElementById('legendFederal').textContent = t.legendFederal;
+            document.getElementById('legendState').textContent = t.legendState;
+            document.getElementById('legendOntario').textContent = t.legendOntario;
+            document.getElementById('legendWeekend').textContent = t.legendWeekend;
+
+            // Controls
+            document.getElementById('selectStatesTitle').textContent = t.selectStates;
+            document.getElementById('selectProvincesTitle').textContent = t.selectProvinces;
+            document.getElementById('btnSelectAll').textContent = t.selectAllUS;
+            document.getElementById('btnDeselectAll').textContent = t.deselectAllUS;
+            document.getElementById('btnUpdateCalendar').textContent = t.updateCalendar;
+
+            // Ontario label (only text part)
+            const ontarioCheckbox = document.getElementById('ontario_ON');
+            const ontarioLabel = document.getElementById('ontarioLabel');
+            ontarioLabel.innerHTML = `<input type="checkbox" id="ontario_ON" value="ON" onchange="updateCalendar()" ${ontarioCheckbox.checked ? 'checked' : ''}> ${t.ontarioLabel}`;
+
+            // Update state search placeholder
+            const stateSearchInput = document.getElementById('stateSearch');
+            if (stateSearchInput) {
+                stateSearchInput.placeholder = currentLanguage === 'ru' ? 'Поиск штата...' : 'Search state...';
+            }
+
+            // Month and day names
+            monthNames = t.monthNames;
+            dayNames = t.dayNames;
+
+            // Update dropdown text
+            const selectedCount = getSelectedStates().length;
+            updateDropdownToggleText(selectedCount);
+
+            updateThemeButton();
+        }
+
+        // --- Функции статистики ---
+
+        function updateStatistics(holidays) {
+            const federalUS = holidays.filter(h => h.isFederalUS);
+            const stateUS = holidays.filter(h => h.isState);
+            const ontario = holidays.filter(h => h.isOntario);
+
+            // Подсчет уникальных дат
+            const uniqueDates = new Set();
+            holidays.forEach(h => uniqueDates.add(h.date));
+
+            // Подсчет длинных уикендов (праздники в пятницу или понедельник)
+            let longWeekends = 0;
+            uniqueDates.forEach(dateStr => {
+                const date = new Date(dateStr);
+                const day = date.getDay();
+                if (day === 1 || day === 5) longWeekends++;
+            });
+
+            document.getElementById('totalHolidays').textContent = uniqueDates.size;
+            document.getElementById('federalCount').textContent = federalUS.length;
+            document.getElementById('regionalCount').textContent = stateUS.length;
+            document.getElementById('ontarioCount').textContent = ontario.length;
+            document.getElementById('longWeekends').textContent = longWeekends;
+        }
+
+        // --- Функции режимов просмотра ---
+
+        function setViewMode(mode) {
+            currentViewMode = mode;
+            localStorage.setItem('viewMode', mode);
+
+            // Update button states
+            document.querySelectorAll('.view-mode-btn').forEach(btn => btn.classList.remove('active'));
+            document.getElementById(`view${mode.charAt(0).toUpperCase() + mode.slice(1)}`).classList.add('active');
+
+            // Show/hide views
+            document.getElementById('calendarContainer').classList.toggle('active', mode === 'grid');
+            document.getElementById('listContainer').classList.toggle('active', mode === 'list');
+            document.getElementById('tableContainer').classList.toggle('active', mode === 'table');
+
+            if (mode === 'list') {
+                generateListView();
+            } else if (mode === 'table') {
+                generateTableView();
+            }
+        }
+
+        function generateListView() {
+            const selectedStates = getSelectedStates();
+            const holidays = getHolidaysForStates(selectedStates);
+
+            const grouped = groupHolidaysByDate(holidays);
+            const t = translations[currentLanguage];
+
+            let html = '';
+            Object.keys(grouped).sort().forEach(dateStr => {
+                const date = new Date(dateStr);
+                const dayOfWeek = dayNames[date.getDay()];
+                const day = date.getDate();
+                const month = monthNames[date.getMonth()];
+
+                const dayHolidays = grouped[dateStr];
+
+                dayHolidays.forEach(h => {
+                    let type = '';
+                    let typeClass = '';
+                    if (h.isOntario) {
+                        type = t.holidayType.ontario;
+                        typeClass = 'badge-ontario';
+                    } else if (h.isFederalUS) {
+                        type = t.holidayType.federal;
+                        typeClass = 'badge-federal';
+                    } else if (h.isState) {
+                        type = t.holidayType.state;
+                        typeClass = 'badge-state';
+                    }
+
+                    html += `
+                        <div class="holiday-list-item" data-type="${typeClass}">
+                            <div class="holiday-date-info">
+                                <div class="holiday-date-box">
+                                    <div class="holiday-day">${day}</div>
+                                    <div class="holiday-month">${month.substring(0, 3)}</div>
+                                </div>
+                                <div class="holiday-details">
+                                    <div class="holiday-name">${h.name}</div>
+                                    <div class="holiday-type">${dayOfWeek}, ${day} ${month} • ${type}</div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                });
+            });
+
+            document.getElementById('holidayList').innerHTML = html || '<p style="text-align: center; padding: 40px; color: var(--text-secondary);">Нет праздников для отображения</p>';
+        }
+
+        function generateTableView() {
+            const selectedStates = getSelectedStates();
+            const holidays = getHolidaysForStates(selectedStates);
+            const grouped = groupHolidaysByDate(holidays);
+            const t = translations[currentLanguage];
+
+            let html = `
+                <table>
+                    <thead>
+                        <tr>
+                            <th>${t.tableHeaders[0]}</th>
+                            <th>${t.tableHeaders[1]}</th>
+                            <th>${t.tableHeaders[2]}</th>
+                            <th>${t.tableHeaders[3]}</th>
+                            <th>${t.tableHeaders[4]}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+
+            Object.keys(grouped).sort().forEach(dateStr => {
+                const date = new Date(dateStr);
+                const dayOfWeek = dayNames[date.getDay()];
+                const formatted = `${date.getDate()} ${monthNames[date.getMonth()]} 2026`;
+
+                grouped[dateStr].forEach(h => {
+                    let type = '';
+                    let typeClass = '';
+                    let region = '';
+
+                    if (h.isOntario) {
+                        type = t.holidayType.ontario;
+                        typeClass = 'badge-ontario';
+                        region = 'Ontario, Canada';
+                    } else if (h.isFederalUS) {
+                        type = t.holidayType.federal;
+                        typeClass = 'badge-federal';
+                        region = 'All Selected States';
+                    } else if (h.isState) {
+                        type = t.holidayType.state;
+                        typeClass = 'badge-state';
+                        region = h.stateName || h.state;
+                    }
+
+                    html += `
+                        <tr>
+                            <td>${formatted}</td>
+                            <td>${dayOfWeek}</td>
+                            <td><strong>${h.name}</strong></td>
+                            <td><span class="table-badge ${typeClass}">${type}</span></td>
+                            <td>${region}</td>
+                        </tr>
+                    `;
+                });
+            });
+
+            html += '</tbody></table>';
+            document.getElementById('holidayTable').innerHTML = html;
+        }
+
+        function groupHolidaysByDate(holidays) {
+            const grouped = {};
+            holidays.forEach(h => {
+                const dateKey = h.observed || h.date;
+                if (!grouped[dateKey]) grouped[dateKey] = [];
+                grouped[dateKey].push(h);
+            });
+            return grouped;
+        }
+
+        // --- Функции поиска и фильтрации ---
+
+        function filterHolidays() {
+            const searchTerm = document.getElementById('holidaySearch').value.toLowerCase();
+
+            if (currentViewMode === 'list') {
+                const items = document.querySelectorAll('.holiday-list-item');
+                items.forEach(item => {
+                    const text = item.textContent.toLowerCase();
+                    const matchesSearch = text.includes(searchTerm);
+                    const matchesFilter = checkFilterMatch(item);
+                    item.style.display = (matchesSearch && matchesFilter) ? 'flex' : 'none';
+                });
+            } else if (currentViewMode === 'table') {
+                const rows = document.querySelectorAll('.holiday-table tbody tr');
+                rows.forEach(row => {
+                    const text = row.textContent.toLowerCase();
+                    const matchesSearch = text.includes(searchTerm);
+                    const badge = row.querySelector('.table-badge');
+                    const matchesFilter = checkBadgeFilter(badge);
+                    row.style.display = (matchesSearch && matchesFilter) ? '' : 'none';
+                });
+            }
+        }
+
+        function toggleFilter(type) {
+            activeFilter = type;
+            document.querySelectorAll('.filter-chip').forEach(chip => {
+                chip.classList.toggle('active', chip.dataset.filter === type);
+            });
+            filterHolidays();
+        }
+
+        function checkFilterMatch(item) {
+            if (activeFilter === 'all') return true;
+            const type = item.dataset.type;
+            if (activeFilter === 'federal') return type === 'badge-federal';
+            if (activeFilter === 'state') return type === 'badge-state';
+            if (activeFilter === 'ontario') return type === 'badge-ontario';
+            return true;
+        }
+
+        function checkBadgeFilter(badge) {
+            if (activeFilter === 'all') return true;
+            if (!badge) return false;
+            const classes = badge.className;
+            if (activeFilter === 'federal') return classes.includes('badge-federal');
+            if (activeFilter === 'state') return classes.includes('badge-state');
+            if (activeFilter === 'ontario') return classes.includes('badge-ontario');
+            return true;
+        } 
 
         // --- Dropdown и Поиск Функции ---
         
@@ -654,12 +1567,14 @@
         function updateDropdownToggleText(selectedCount) {
             const totalStates = Object.keys(states).length;
             const toggleButton = document.getElementById('dropdownToggle');
+            const t = translations[currentLanguage];
+
             if (selectedCount === totalStates) {
-                toggleButton.textContent = 'Выбраны все штаты';
+                toggleButton.textContent = t.allStatesSelected;
             } else if (selectedCount > 0) {
-                toggleButton.textContent = `Выбрано штатов: ${selectedCount} / ${totalStates}`;
+                toggleButton.textContent = `${t.statesSelected}: ${selectedCount} / ${totalStates}`;
             } else {
-                toggleButton.textContent = 'Выберите штаты...';
+                toggleButton.textContent = t.selectStatesPlaceholder;
             }
         }
 
@@ -778,19 +1693,37 @@
 
             document.getElementById('dropdownMenu').classList.remove('show');
 
+            const t = translations[currentLanguage];
+            const noSelectionMsg = currentLanguage === 'ru'
+                ? 'Пожалуйста, выберите хотя бы один штат США или Онтарио для отображения праздников'
+                : 'Please select at least one US state or Ontario to display holidays';
+
             if (selectedStates.length === 0 && !isONSelected) {
-                container.innerHTML = '<div class="no-selection">Пожалуйста, выберите хотя бы один штат США или Онтарио для отображения праздников</div>';
+                container.innerHTML = `<div class="no-selection" style="text-align: center; padding: 40px; color: var(--text-secondary);">${noSelectionMsg}</div>`;
                 return;
             }
 
             const holidays = getHolidaysForStates(selectedStates);
-            let html = '';
 
+            // Update statistics
+            updateStatistics(holidays);
+
+            // Update calendar grid
+            let html = '';
             for (let month = 0; month < 12; month++) {
                 html += generateMonthCalendar(2026, month, holidays);
             }
-
             container.innerHTML = html;
+
+            // Update other views
+            if (currentViewMode === 'list') {
+                generateListView();
+            } else if (currentViewMode === 'table') {
+                generateTableView();
+            }
+
+            // Check for upcoming holidays and request notification permission
+            checkUpcomingHolidays(holidays);
         }
 
         function generateMonthCalendar(year, month, holidays) {
@@ -983,9 +1916,89 @@
             }
         };
 
+        // --- Функции уведомлений ---
 
-        initStates();
-        updateCalendar();
+        function checkUpcomingHolidays(holidays) {
+            if (!("Notification" in window)) return;
+
+            if (Notification.permission === "default") {
+                // Спрашиваем разрешение только один раз
+                const asked = localStorage.getItem('notificationAsked');
+                if (!asked) {
+                    setTimeout(() => {
+                        Notification.requestPermission().then(permission => {
+                            localStorage.setItem('notificationAsked', 'true');
+                            if (permission === "granted") {
+                                scheduleNotifications(holidays);
+                            }
+                        });
+                    }, 3000);
+                }
+            } else if (Notification.permission === "granted") {
+                scheduleNotifications(holidays);
+            }
+        }
+
+        function scheduleNotifications(holidays) {
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+
+            const upcoming = holidays.filter(h => {
+                const holidayDate = new Date(h.date);
+                const daysUntil = Math.ceil((holidayDate - today) / (1000 * 60 * 60 * 24));
+                return daysUntil > 0 && daysUntil <= 7;
+            });
+
+            if (upcoming.length > 0 && Notification.permission === "granted") {
+                const nextHoliday = upcoming[0];
+                const holidayDate = new Date(nextHoliday.date);
+                const daysUntil = Math.ceil((holidayDate - today) / (1000 * 60 * 60 * 24));
+
+                const message = currentLanguage === 'ru'
+                    ? `${nextHoliday.name} через ${daysUntil} ${daysUntil === 1 ? 'день' : 'дней'}!`
+                    : `${nextHoliday.name} in ${daysUntil} day${daysUntil === 1 ? '' : 's'}!`;
+
+                const title = currentLanguage === 'ru' ? 'Приближается праздник!' : 'Upcoming Holiday!';
+
+                // Показываем уведомление только если прошло более 24 часов с последнего
+                const lastNotification = localStorage.getItem('lastNotification');
+                const now = Date.now();
+                if (!lastNotification || (now - parseInt(lastNotification)) > 24 * 60 * 60 * 1000) {
+                    new Notification(title, {
+                        body: message,
+                        icon: '🎉',
+                        tag: 'holiday-reminder'
+                    });
+                    localStorage.setItem('lastNotification', now.toString());
+                }
+            }
+        }
+
+        // --- Инициализация при загрузке ---
+
+        function initApp() {
+            // Apply saved theme
+            document.documentElement.setAttribute('data-theme', currentTheme);
+
+            // Apply saved language
+            updateLanguage();
+
+            // Apply saved view mode
+            setViewMode(currentViewMode);
+
+            // Initialize states
+            initStates();
+
+            // Update calendar
+            updateCalendar();
+        }
+
+        // Start app when DOM is ready
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initApp);
+        } else {
+            initApp();
+        }
     </script>
 </body>
 </html>
