@@ -76,7 +76,7 @@
             align-items: center;
         }
 
-        .theme-toggle, .lang-toggle, .notification-toggle {
+        .theme-toggle, .lang-toggle, .notification-toggle, .bitrix-toggle {
             background: rgba(255, 255, 255, 0.2);
             border: 2px solid rgba(255, 255, 255, 0.4);
             color: white;
@@ -92,7 +92,7 @@
             position: relative;
         }
 
-        .theme-toggle:hover, .lang-toggle:hover, .notification-toggle:hover {
+        .theme-toggle:hover, .lang-toggle:hover, .notification-toggle:hover, .bitrix-toggle:hover {
             background: rgba(255, 255, 255, 0.3);
             transform: translateY(-2px);
         }
@@ -100,6 +100,11 @@
         .notification-toggle.active {
             background: rgba(76, 175, 80, 0.4);
             border-color: rgba(76, 175, 80, 0.6);
+        }
+
+        .bitrix-toggle.connected {
+            background: rgba(33, 150, 243, 0.4);
+            border-color: rgba(33, 150, 243, 0.6);
         }
 
         .notification-badge {
@@ -991,6 +996,220 @@
             cursor: not-allowed;
         }
 
+        /* --- Панель настроек Битрикс24 --- */
+        .bitrix-settings-panel {
+            display: none;
+            position: fixed;
+            top: 80px;
+            right: 20px;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            box-shadow: 0 8px 24px var(--shadow-light);
+            padding: 20px;
+            width: 400px;
+            max-height: 80vh;
+            overflow-y: auto;
+            z-index: 1500;
+            animation: slideIn 0.3s ease;
+        }
+
+        .bitrix-settings-panel.show {
+            display: block;
+        }
+
+        .bitrix-input-group {
+            margin-bottom: 15px;
+        }
+
+        .bitrix-input-group label {
+            display: block;
+            color: var(--text-primary);
+            font-weight: 600;
+            margin-bottom: 6px;
+            font-size: 0.9em;
+        }
+
+        .bitrix-input-group input,
+        .bitrix-input-group textarea,
+        .bitrix-input-group select {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 0.9em;
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            transition: all 0.2s;
+        }
+
+        .bitrix-input-group input:focus,
+        .bitrix-input-group textarea:focus,
+        .bitrix-input-group select:focus {
+            outline: none;
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 3px rgba(63, 81, 181, 0.1);
+        }
+
+        .bitrix-input-group textarea {
+            resize: vertical;
+            min-height: 80px;
+            font-family: inherit;
+        }
+
+        .bitrix-input-group small {
+            display: block;
+            color: var(--text-secondary);
+            font-size: 0.8em;
+            margin-top: 4px;
+        }
+
+        .bitrix-connection-status {
+            padding: 10px 15px;
+            border-radius: 6px;
+            margin-bottom: 15px;
+            font-size: 0.9em;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .bitrix-connection-status.connected {
+            background: #e8f5e9;
+            color: #2e7d32;
+            border: 1px solid #4caf50;
+        }
+
+        .bitrix-connection-status.disconnected {
+            background: #ffebee;
+            color: #c62828;
+            border: 1px solid #f44336;
+        }
+
+        [data-theme="dark"] .bitrix-connection-status.connected {
+            background: #1b5e20;
+            color: #a5d6a7;
+        }
+
+        [data-theme="dark"] .bitrix-connection-status.disconnected {
+            background: #b71c1c;
+            color: #ef9a9a;
+        }
+
+        .bitrix-test-btn {
+            width: 100%;
+            padding: 10px;
+            background: #2196f3;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            margin-top: 10px;
+            transition: all 0.2s;
+        }
+
+        .bitrix-test-btn:hover {
+            background: #1976d2;
+            transform: translateY(-1px);
+        }
+
+        .bitrix-test-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .bitrix-save-btn {
+            width: 100%;
+            padding: 12px;
+            background: var(--accent-color);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            margin-top: 15px;
+            font-size: 1em;
+            transition: all 0.2s;
+        }
+
+        .bitrix-save-btn:hover {
+            opacity: 0.9;
+            transform: translateY(-1px);
+        }
+
+        .holiday-filter-list {
+            max-height: 200px;
+            overflow-y: auto;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 10px;
+            background: var(--bg-controls);
+        }
+
+        .holiday-filter-item {
+            display: flex;
+            align-items: center;
+            padding: 6px 0;
+            gap: 8px;
+        }
+
+        .holiday-filter-item input[type="checkbox"] {
+            width: auto;
+            cursor: pointer;
+        }
+
+        .holiday-filter-item label {
+            flex: 1;
+            cursor: pointer;
+            font-weight: 400 !important;
+            margin: 0 !important;
+            font-size: 0.85em !important;
+        }
+
+        .created-tasks-log {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .created-tasks-log h4 {
+            color: var(--text-primary);
+            font-size: 0.9em;
+            margin-bottom: 10px;
+        }
+
+        .task-log-item {
+            padding: 8px 10px;
+            background: var(--bg-controls);
+            border-radius: 6px;
+            margin-bottom: 8px;
+            font-size: 0.85em;
+        }
+
+        .task-log-name {
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 3px;
+        }
+
+        .task-log-date {
+            color: var(--text-secondary);
+            font-size: 0.9em;
+        }
+
+        .task-log-link {
+            color: #2196f3;
+            text-decoration: none;
+            font-size: 0.9em;
+        }
+
+        .task-log-link:hover {
+            text-decoration: underline;
+        }
+
         /* --- Модальное окно (стили заголовков модального окна) --- */
         .modal {
             display: none;
@@ -1107,7 +1326,8 @@
                 justify-content: center;
                 margin-bottom: 15px;
             }
-            .notification-settings-panel {
+            .notification-settings-panel,
+            .bitrix-settings-panel {
                 right: 10px;
                 left: 10px;
                 width: auto;
@@ -1173,6 +1393,10 @@
                     <span id="notificationText">Уведомления</span>
                     <span class="notification-badge" id="notificationBadge" style="display: none;">0</span>
                 </button>
+                <button class="bitrix-toggle" onclick="toggleBitrixPanel()" id="bitrixToggle">
+                    <span id="bitrixIcon">📋</span>
+                    <span id="bitrixText">Битрикс24</span>
+                </button>
             </div>
             <h1 id="mainTitle">Календарь праздников США и Канады 2026</h1>
             <div class="subtitle" id="subtitle">Федеральные, региональные и провинциальные нерабочие дни</div>
@@ -1222,6 +1446,94 @@
             <button class="test-notification-btn" onclick="testNotification()" id="testNotificationBtn">
                 Проверить уведомление
             </button>
+        </div>
+
+        <!-- Панель настроек Битрикс24 -->
+        <div class="bitrix-settings-panel" id="bitrixPanel">
+            <div class="settings-header">
+                <h3 id="bitrixSettingsTitle">Интеграция с Битрикс24</h3>
+                <button class="close-settings" onclick="closeBitrixPanel()">&times;</button>
+            </div>
+
+            <div class="bitrix-connection-status disconnected" id="bitrixStatus">
+                <span>⚠️</span>
+                <span id="bitrixStatusText">Не подключено</span>
+            </div>
+
+            <div class="bitrix-input-group">
+                <label for="bitrixWebhook" id="bitrixWebhookLabel">Webhook URL:</label>
+                <input type="text" id="bitrixWebhook" placeholder="https://your-portal.bitrix24.ru/rest/...">
+                <small id="bitrixWebhookHelp">Получите webhook в: Приложения → Входящий вебхук</small>
+            </div>
+
+            <div class="bitrix-input-group">
+                <label for="bitrixTaskTitle" id="bitrixTaskTitleLabel">Шаблон названия задачи:</label>
+                <input type="text" id="bitrixTaskTitle" value="Подготовка к {holiday} - проверка работы препцентров">
+                <small id="bitrixTaskTitleHelp">{holiday} - название праздника, {date} - дата</small>
+            </div>
+
+            <div class="bitrix-input-group">
+                <label for="bitrixTaskDescription" id="bitrixTaskDescLabel">Описание задачи:</label>
+                <textarea id="bitrixTaskDescription" placeholder="Проверить работу всех преп-центров в преддверии праздника {holiday} ({date}).&#10;&#10;Необходимо:&#10;- Связаться с руководителями&#10;- Уточнить график работы&#10;- Подготовить информацию для клиентов"></textarea>
+            </div>
+
+            <div class="bitrix-input-group">
+                <label for="bitrixResponsible" id="bitrixResponsibleLabel">ID ответственного:</label>
+                <input type="number" id="bitrixResponsible" placeholder="1">
+                <small id="bitrixResponsibleHelp">ID пользователя Битрикс24</small>
+            </div>
+
+            <div class="bitrix-input-group">
+                <label for="bitrixDaysBefore" id="bitrixDaysBeforeLabel">Создавать задачу за (дней):</label>
+                <select id="bitrixDaysBefore">
+                    <option value="3">3 дня</option>
+                    <option value="7" selected>7 дней</option>
+                    <option value="10">10 дней</option>
+                    <option value="14">14 дней</option>
+                    <option value="21">21 день</option>
+                </select>
+            </div>
+
+            <div class="bitrix-input-group">
+                <div class="toggle-switch">
+                    <label for="bitrixAutoCreate" id="bitrixAutoLabel">Автоматическое создание задач</label>
+                    <label class="switch">
+                        <input type="checkbox" id="bitrixAutoCreate">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="bitrix-input-group">
+                <label id="bitrixFilterLabel">Создавать задачи для праздников:</label>
+                <div class="holiday-filter-list" id="bitrixHolidayFilter">
+                    <div class="holiday-filter-item">
+                        <input type="checkbox" id="bitrix_federal" value="federal" checked>
+                        <label for="bitrix_federal">Федеральные праздники США</label>
+                    </div>
+                    <div class="holiday-filter-item">
+                        <input type="checkbox" id="bitrix_state" value="state">
+                        <label for="bitrix_state">Региональные праздники США</label>
+                    </div>
+                    <div class="holiday-filter-item">
+                        <input type="checkbox" id="bitrix_ontario" value="ontario" checked>
+                        <label for="bitrix_ontario">Праздники Онтарио</label>
+                    </div>
+                </div>
+            </div>
+
+            <button class="bitrix-test-btn" onclick="testBitrixConnection()" id="bitrixTestBtn">
+                Проверить подключение
+            </button>
+
+            <button class="bitrix-save-btn" onclick="saveBitrixSettings()" id="bitrixSaveBtn">
+                Сохранить настройки
+            </button>
+
+            <div class="created-tasks-log">
+                <h4 id="bitrixLogTitle">Созданные задачи:</h4>
+                <div id="bitrixTaskLog"></div>
+            </div>
         </div>
 
         <div class="stats-panel" id="statsPanel">
@@ -1369,6 +1681,17 @@
         let notificationDaysBefore = parseInt(localStorage.getItem('notificationDaysBefore')) || 7;
         let upcomingHolidays = [];
 
+        // Bitrix24 variables
+        let bitrixWebhookUrl = localStorage.getItem('bitrixWebhookUrl') || '';
+        let bitrixTaskTitle = localStorage.getItem('bitrixTaskTitle') || 'Подготовка к {holiday} - проверка работы препцентров';
+        let bitrixTaskDescription = localStorage.getItem('bitrixTaskDescription') || '';
+        let bitrixResponsibleId = localStorage.getItem('bitrixResponsibleId') || '1';
+        let bitrixDaysBefore = parseInt(localStorage.getItem('bitrixDaysBefore')) || 7;
+        let bitrixAutoCreate = localStorage.getItem('bitrixAutoCreate') === 'true';
+        let bitrixHolidayTypes = JSON.parse(localStorage.getItem('bitrixHolidayTypes') || '["federal","ontario"]');
+        let bitrixCreatedTasks = JSON.parse(localStorage.getItem('bitrixCreatedTasks') || '[]');
+        let bitrixConnected = false;
+
         // --- Объект переводов ---
         const translations = {
             ru: {
@@ -1423,7 +1746,30 @@
                 testNotificationTitle: 'Тестовое уведомление',
                 testNotificationBody: 'Уведомления работают отлично!',
                 permissionDenied: 'Разрешение на уведомления отклонено',
-                inDays: (days) => `через ${days} ${days === 1 ? 'день' : days < 5 ? 'дня' : 'дней'}`
+                inDays: (days) => `через ${days} ${days === 1 ? 'день' : days < 5 ? 'дня' : 'дней'}`,
+                bitrixText: 'Битрикс24',
+                bitrixSettingsTitle: 'Интеграция с Битрикс24',
+                bitrixStatusConnected: '✓ Подключено',
+                bitrixStatusDisconnected: '⚠️ Не подключено',
+                bitrixWebhookLabel: 'Webhook URL:',
+                bitrixWebhookHelp: 'Получите webhook в: Приложения → Входящий вебхук',
+                bitrixTaskTitleLabel: 'Шаблон названия задачи:',
+                bitrixTaskTitleHelp: '{holiday} - название праздника, {date} - дата',
+                bitrixTaskDescLabel: 'Описание задачи:',
+                bitrixResponsibleLabel: 'ID ответственного:',
+                bitrixResponsibleHelp: 'ID пользователя Битрикс24',
+                bitrixDaysBeforeLabel: 'Создавать задачу за (дней):',
+                bitrixAutoLabel: 'Автоматическое создание задач',
+                bitrixFilterLabel: 'Создавать задачи для праздников:',
+                bitrixTestBtn: 'Проверить подключение',
+                bitrixSaveBtn: 'Сохранить настройки',
+                bitrixLogTitle: 'Созданные задачи:',
+                bitrixNoTasks: 'Задачи еще не созданы',
+                bitrixConnectionSuccess: 'Подключение успешно!',
+                bitrixConnectionFailed: 'Ошибка подключения',
+                bitrixSettingsSaved: 'Настройки сохранены',
+                bitrixTaskCreated: 'Задача создана',
+                bitrixTaskError: 'Ошибка создания задачи'
             },
             en: {
                 mainTitle: 'US & Canada Holiday Calendar 2026',
@@ -1477,7 +1823,30 @@
                 testNotificationTitle: 'Test Notification',
                 testNotificationBody: 'Notifications are working great!',
                 permissionDenied: 'Notification permission denied',
-                inDays: (days) => `in ${days} day${days === 1 ? '' : 's'}`
+                inDays: (days) => `in ${days} day${days === 1 ? '' : 's'}`,
+                bitrixText: 'Bitrix24',
+                bitrixSettingsTitle: 'Bitrix24 Integration',
+                bitrixStatusConnected: '✓ Connected',
+                bitrixStatusDisconnected: '⚠️ Not Connected',
+                bitrixWebhookLabel: 'Webhook URL:',
+                bitrixWebhookHelp: 'Get webhook at: Apps → Incoming Webhook',
+                bitrixTaskTitleLabel: 'Task title template:',
+                bitrixTaskTitleHelp: '{holiday} - holiday name, {date} - date',
+                bitrixTaskDescLabel: 'Task description:',
+                bitrixResponsibleLabel: 'Responsible ID:',
+                bitrixResponsibleHelp: 'Bitrix24 user ID',
+                bitrixDaysBeforeLabel: 'Create task (days before):',
+                bitrixAutoLabel: 'Automatic task creation',
+                bitrixFilterLabel: 'Create tasks for holidays:',
+                bitrixTestBtn: 'Test Connection',
+                bitrixSaveBtn: 'Save Settings',
+                bitrixLogTitle: 'Created Tasks:',
+                bitrixNoTasks: 'No tasks created yet',
+                bitrixConnectionSuccess: 'Connection successful!',
+                bitrixConnectionFailed: 'Connection error',
+                bitrixSettingsSaved: 'Settings saved',
+                bitrixTaskCreated: 'Task created',
+                bitrixTaskError: 'Task creation error'
             }
         };
 
@@ -1663,6 +2032,9 @@
             // Update notification panel
             updateNotificationPanelLanguage();
 
+            // Update Bitrix24 panel
+            updateBitrixPanelLanguage();
+
             updateThemeButton();
         }
 
@@ -1831,6 +2203,279 @@
             document.getElementById('daysText14').textContent = t.daysText14;
 
             updateUpcomingHolidaysList();
+        }
+
+        // --- Функции Битрикс24 ---
+
+        function toggleBitrixPanel() {
+            const panel = document.getElementById('bitrixPanel');
+            const isShown = panel.classList.contains('show');
+
+            if (isShown) {
+                closeBitrixPanel();
+            } else {
+                panel.classList.add('show');
+                loadBitrixSettings();
+                updateBitrixTaskLog();
+            }
+        }
+
+        function closeBitrixPanel() {
+            document.getElementById('bitrixPanel').classList.remove('show');
+        }
+
+        function loadBitrixSettings() {
+            document.getElementById('bitrixWebhook').value = bitrixWebhookUrl;
+            document.getElementById('bitrixTaskTitle').value = bitrixTaskTitle;
+            document.getElementById('bitrixTaskDescription').value = bitrixTaskDescription;
+            document.getElementById('bitrixResponsible').value = bitrixResponsibleId;
+            document.getElementById('bitrixDaysBefore').value = bitrixDaysBefore;
+            document.getElementById('bitrixAutoCreate').checked = bitrixAutoCreate;
+
+            // Load holiday type filters
+            document.getElementById('bitrix_federal').checked = bitrixHolidayTypes.includes('federal');
+            document.getElementById('bitrix_state').checked = bitrixHolidayTypes.includes('state');
+            document.getElementById('bitrix_ontario').checked = bitrixHolidayTypes.includes('ontario');
+
+            updateBitrixConnectionStatus();
+        }
+
+        function saveBitrixSettings() {
+            bitrixWebhookUrl = document.getElementById('bitrixWebhook').value.trim();
+            bitrixTaskTitle = document.getElementById('bitrixTaskTitle').value;
+            bitrixTaskDescription = document.getElementById('bitrixTaskDescription').value;
+            bitrixResponsibleId = document.getElementById('bitrixResponsible').value;
+            bitrixDaysBefore = parseInt(document.getElementById('bitrixDaysBefore').value);
+            bitrixAutoCreate = document.getElementById('bitrixAutoCreate').checked;
+
+            // Save holiday type filters
+            bitrixHolidayTypes = [];
+            if (document.getElementById('bitrix_federal').checked) bitrixHolidayTypes.push('federal');
+            if (document.getElementById('bitrix_state').checked) bitrixHolidayTypes.push('state');
+            if (document.getElementById('bitrix_ontario').checked) bitrixHolidayTypes.push('ontario');
+
+            // Save to localStorage
+            localStorage.setItem('bitrixWebhookUrl', bitrixWebhookUrl);
+            localStorage.setItem('bitrixTaskTitle', bitrixTaskTitle);
+            localStorage.setItem('bitrixTaskDescription', bitrixTaskDescription);
+            localStorage.setItem('bitrixResponsibleId', bitrixResponsibleId);
+            localStorage.setItem('bitrixDaysBefore', bitrixDaysBefore);
+            localStorage.setItem('bitrixAutoCreate', bitrixAutoCreate);
+            localStorage.setItem('bitrixHolidayTypes', JSON.stringify(bitrixHolidayTypes));
+
+            const t = translations[currentLanguage];
+            alert(t.bitrixSettingsSaved);
+
+            updateBitrixConnectionStatus();
+
+            // Check and create tasks if auto-create is enabled
+            if (bitrixAutoCreate && bitrixConnected) {
+                checkAndCreateBitrixTasks();
+            }
+        }
+
+        async function testBitrixConnection() {
+            const webhook = document.getElementById('bitrixWebhook').value.trim();
+            const t = translations[currentLanguage];
+
+            if (!webhook) {
+                alert('Please enter webhook URL');
+                return;
+            }
+
+            const testBtn = document.getElementById('bitrixTestBtn');
+            testBtn.disabled = true;
+            testBtn.textContent = '...';
+
+            try {
+                // Test connection by calling user.current method
+                const response = await fetch(`${webhook}/user.current`, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'}
+                });
+
+                const data = await response.json();
+
+                if (data.result) {
+                    bitrixConnected = true;
+                    alert(`${t.bitrixConnectionSuccess}\nПользователь: ${data.result.NAME} ${data.result.LAST_NAME}`);
+                    updateBitrixConnectionStatus();
+                } else {
+                    bitrixConnected = false;
+                    alert(t.bitrixConnectionFailed + ': ' + (data.error_description || 'Unknown error'));
+                }
+            } catch (error) {
+                bitrixConnected = false;
+                alert(t.bitrixConnectionFailed + ': ' + error.message);
+            } finally {
+                testBtn.disabled = false;
+                testBtn.textContent = t.bitrixTestBtn;
+            }
+        }
+
+        function updateBitrixConnectionStatus() {
+            const statusDiv = document.getElementById('bitrixStatus');
+            const statusText = document.getElementById('bitrixStatusText');
+            const toggle = document.getElementById('bitrixToggle');
+            const t = translations[currentLanguage];
+
+            if (bitrixWebhookUrl && bitrixConnected) {
+                statusDiv.className = 'bitrix-connection-status connected';
+                statusText.textContent = t.bitrixStatusConnected;
+                toggle.classList.add('connected');
+            } else {
+                statusDiv.className = 'bitrix-connection-status disconnected';
+                statusText.textContent = t.bitrixStatusDisconnected;
+                toggle.classList.remove('connected');
+            }
+        }
+
+        async function checkAndCreateBitrixTasks() {
+            if (!bitrixConnected || !bitrixAutoCreate || !bitrixWebhookUrl) return;
+
+            const holidays = allHolidaysData;
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+
+            // Filter holidays that need tasks
+            const holidaysNeedingTasks = holidays.filter(h => {
+                const holidayDate = new Date(h.date);
+                const daysUntil = Math.ceil((holidayDate - today) / (1000 * 60 * 60 * 24));
+
+                // Check if in time range
+                if (daysUntil <= 0 || daysUntil > bitrixDaysBefore) return false;
+
+                // Check holiday type
+                let matchesType = false;
+                if (h.isFederalUS && bitrixHolidayTypes.includes('federal')) matchesType = true;
+                if (h.isState && bitrixHolidayTypes.includes('state')) matchesType = true;
+                if (h.isOntario && bitrixHolidayTypes.includes('ontario')) matchesType = true;
+
+                if (!matchesType) return false;
+
+                // Check if already created
+                const taskKey = `${h.date}_${h.name}`;
+                const alreadyCreated = bitrixCreatedTasks.some(t => t.key === taskKey);
+
+                return !alreadyCreated;
+            });
+
+            // Create tasks
+            for (const holiday of holidaysNeedingTasks) {
+                await createBitrixTask(holiday);
+            }
+        }
+
+        async function createBitrixTask(holiday) {
+            const t = translations[currentLanguage];
+
+            try {
+                const holidayDate = new Date(holiday.date);
+                const formattedDate = `${holidayDate.getDate()}.${holidayDate.getMonth() + 1}.${holidayDate.getFullYear()}`;
+
+                // Replace placeholders in title and description
+                const title = bitrixTaskTitle
+                    .replace('{holiday}', holiday.name)
+                    .replace('{date}', formattedDate);
+
+                const description = bitrixTaskDescription
+                    .replace('{holiday}', holiday.name)
+                    .replace('{date}', formattedDate);
+
+                // Calculate deadline (holiday date)
+                const deadline = holidayDate.toISOString().split('T')[0];
+
+                // Create task via Bitrix24 REST API
+                const response = await fetch(`${bitrixWebhookUrl}/tasks.task.add`, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({
+                        fields: {
+                            TITLE: title,
+                            DESCRIPTION: description,
+                            RESPONSIBLE_ID: bitrixResponsibleId,
+                            DEADLINE: deadline,
+                            TAGS: ['праздник', 'препцентр', 'автоматическая']
+                        }
+                    })
+                });
+
+                const data = await response.json();
+
+                if (data.result && data.result.task) {
+                    const taskId = data.result.task.id;
+                    const taskKey = `${holiday.date}_${holiday.name}`;
+
+                    // Save to created tasks log
+                    bitrixCreatedTasks.push({
+                        key: taskKey,
+                        taskId: taskId,
+                        holidayName: holiday.name,
+                        holidayDate: formattedDate,
+                        createdAt: new Date().toISOString()
+                    });
+
+                    localStorage.setItem('bitrixCreatedTasks', JSON.stringify(bitrixCreatedTasks));
+                    updateBitrixTaskLog();
+
+                    console.log(`${t.bitrixTaskCreated}: ${title} (ID: ${taskId})`);
+                } else {
+                    console.error(`${t.bitrixTaskError}:`, data.error_description || 'Unknown error');
+                }
+            } catch (error) {
+                console.error(`${t.bitrixTaskError}:`, error);
+            }
+        }
+
+        function updateBitrixTaskLog() {
+            const container = document.getElementById('bitrixTaskLog');
+            const t = translations[currentLanguage];
+
+            if (bitrixCreatedTasks.length === 0) {
+                container.innerHTML = `<div class="no-upcoming">${t.bitrixNoTasks}</div>`;
+            } else {
+                let html = '';
+                // Show last 10 tasks
+                const recentTasks = bitrixCreatedTasks.slice(-10).reverse();
+
+                recentTasks.forEach(task => {
+                    const bitrixDomain = bitrixWebhookUrl.split('/rest/')[0];
+                    const taskUrl = `${bitrixDomain}/company/personal/user/1/tasks/task/view/${task.taskId}/`;
+
+                    html += `
+                        <div class="task-log-item">
+                            <div class="task-log-name">${task.holidayName}</div>
+                            <div class="task-log-date">${task.holidayDate}</div>
+                            <a href="${taskUrl}" target="_blank" class="task-log-link">Открыть задачу →</a>
+                        </div>
+                    `;
+                });
+
+                container.innerHTML = html;
+            }
+        }
+
+        function updateBitrixPanelLanguage() {
+            const t = translations[currentLanguage];
+
+            document.getElementById('bitrixText').textContent = t.bitrixText;
+            document.getElementById('bitrixSettingsTitle').textContent = t.bitrixSettingsTitle;
+            document.getElementById('bitrixWebhookLabel').textContent = t.bitrixWebhookLabel;
+            document.getElementById('bitrixWebhookHelp').textContent = t.bitrixWebhookHelp;
+            document.getElementById('bitrixTaskTitleLabel').textContent = t.bitrixTaskTitleLabel;
+            document.getElementById('bitrixTaskTitleHelp').textContent = t.bitrixTaskTitleHelp;
+            document.getElementById('bitrixTaskDescLabel').textContent = t.bitrixTaskDescLabel;
+            document.getElementById('bitrixResponsibleLabel').textContent = t.bitrixResponsibleLabel;
+            document.getElementById('bitrixResponsibleHelp').textContent = t.bitrixResponsibleHelp;
+            document.getElementById('bitrixDaysBeforeLabel').textContent = t.bitrixDaysBeforeLabel;
+            document.getElementById('bitrixAutoLabel').textContent = t.bitrixAutoLabel;
+            document.getElementById('bitrixFilterLabel').textContent = t.bitrixFilterLabel;
+            document.getElementById('bitrixTestBtn').textContent = t.bitrixTestBtn;
+            document.getElementById('bitrixSaveBtn').textContent = t.bitrixSaveBtn;
+            document.getElementById('bitrixLogTitle').textContent = t.bitrixLogTitle;
+
+            updateBitrixConnectionStatus();
+            updateBitrixTaskLog();
         }
 
         // --- Функции статистики ---
@@ -2222,6 +2867,11 @@
 
             // Check for upcoming holidays and request notification permission
             checkUpcomingHolidays(holidays);
+
+            // Check and create Bitrix24 tasks if enabled
+            if (bitrixAutoCreate && bitrixConnected) {
+                checkAndCreateBitrixTasks();
+            }
         }
 
         function generateMonthCalendar(year, month, holidays) {
@@ -2490,14 +3140,25 @@
             // Update calendar
             updateCalendar();
 
-            // Close notification panel on outside click
+            // Initialize Bitrix24
+            updateBitrixConnectionStatus();
+
+            // Close panels on outside click
             document.addEventListener('click', function(event) {
-                const panel = document.getElementById('notificationPanel');
-                const toggle = document.getElementById('notificationToggle');
-                if (panel.classList.contains('show') &&
-                    !panel.contains(event.target) &&
-                    !toggle.contains(event.target)) {
+                const notifPanel = document.getElementById('notificationPanel');
+                const notifToggle = document.getElementById('notificationToggle');
+                if (notifPanel.classList.contains('show') &&
+                    !notifPanel.contains(event.target) &&
+                    !notifToggle.contains(event.target)) {
                     closeNotificationPanel();
+                }
+
+                const bitrixPanel = document.getElementById('bitrixPanel');
+                const bitrixToggle = document.getElementById('bitrixToggle');
+                if (bitrixPanel.classList.contains('show') &&
+                    !bitrixPanel.contains(event.target) &&
+                    !bitrixToggle.contains(event.target)) {
+                    closeBitrixPanel();
                 }
             });
         }
