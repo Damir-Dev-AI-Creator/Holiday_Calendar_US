@@ -76,7 +76,7 @@
             align-items: center;
         }
 
-        .theme-toggle, .lang-toggle {
+        .theme-toggle, .lang-toggle, .notification-toggle {
             background: rgba(255, 255, 255, 0.2);
             border: 2px solid rgba(255, 255, 255, 0.4);
             color: white;
@@ -89,11 +89,31 @@
             display: flex;
             align-items: center;
             gap: 6px;
+            position: relative;
         }
 
-        .theme-toggle:hover, .lang-toggle:hover {
+        .theme-toggle:hover, .lang-toggle:hover, .notification-toggle:hover {
             background: rgba(255, 255, 255, 0.3);
             transform: translateY(-2px);
+        }
+
+        .notification-toggle.active {
+            background: rgba(76, 175, 80, 0.4);
+            border-color: rgba(76, 175, 80, 0.6);
+        }
+
+        .notification-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: #f44336;
+            color: white;
+            border-radius: 10px;
+            padding: 2px 6px;
+            font-size: 0.7em;
+            font-weight: 700;
+            min-width: 18px;
+            text-align: center;
         }
 
         h1 {
@@ -755,9 +775,225 @@
             /* Стили рамки будут добавлены через inline-style для соответствия цветам праздников */
         }
         
+        /* --- Панель настроек уведомлений --- */
+        .notification-settings-panel {
+            display: none;
+            position: fixed;
+            top: 80px;
+            right: 20px;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            box-shadow: 0 8px 24px var(--shadow-light);
+            padding: 20px;
+            width: 320px;
+            z-index: 1500;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .notification-settings-panel.show {
+            display: block;
+        }
+
+        .settings-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        .settings-header h3 {
+            color: var(--accent-color);
+            font-size: 1.1em;
+            margin: 0;
+        }
+
+        .close-settings {
+            background: none;
+            border: none;
+            font-size: 1.5em;
+            color: var(--text-secondary);
+            cursor: pointer;
+            padding: 0;
+            line-height: 1;
+        }
+
+        .close-settings:hover {
+            color: var(--text-primary);
+        }
+
+        .settings-option {
+            margin-bottom: 15px;
+        }
+
+        .settings-option label {
+            display: block;
+            color: var(--text-primary);
+            font-weight: 600;
+            margin-bottom: 8px;
+            font-size: 0.9em;
+        }
+
+        .toggle-switch {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 0;
+        }
+
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 24px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 24px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background-color: #4CAF50;
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
+
+        .notification-days {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .day-option {
+            flex: 1;
+            min-width: 60px;
+            padding: 8px 12px;
+            background: var(--bg-controls);
+            border: 2px solid var(--border-color);
+            border-radius: 6px;
+            text-align: center;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.85em;
+            color: var(--text-primary);
+            transition: all 0.2s;
+        }
+
+        .day-option:hover {
+            border-color: var(--accent-color);
+        }
+
+        .day-option.selected {
+            background: var(--accent-color);
+            color: white;
+            border-color: var(--accent-color);
+        }
+
+        .upcoming-holidays-list {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .upcoming-holidays-list h4 {
+            color: var(--text-primary);
+            font-size: 0.9em;
+            margin-bottom: 10px;
+        }
+
+        .upcoming-holiday-item {
+            padding: 8px 10px;
+            background: var(--bg-controls);
+            border-radius: 6px;
+            margin-bottom: 8px;
+            font-size: 0.85em;
+        }
+
+        .upcoming-holiday-name {
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 3px;
+        }
+
+        .upcoming-holiday-date {
+            color: var(--text-secondary);
+            font-size: 0.9em;
+        }
+
+        .no-upcoming {
+            text-align: center;
+            padding: 15px;
+            color: var(--text-secondary);
+            font-size: 0.85em;
+        }
+
+        .test-notification-btn {
+            width: 100%;
+            padding: 10px;
+            background: var(--accent-color);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            margin-top: 10px;
+            transition: all 0.2s;
+        }
+
+        .test-notification-btn:hover {
+            opacity: 0.9;
+            transform: translateY(-1px);
+        }
+
+        .test-notification-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+
         /* --- Модальное окно (стили заголовков модального окна) --- */
         .modal {
-            display: none; 
+            display: none;
             position: fixed;
             z-index: 2000;
             left: 0;
@@ -871,6 +1107,13 @@
                 justify-content: center;
                 margin-bottom: 15px;
             }
+            .notification-settings-panel {
+                right: 10px;
+                left: 10px;
+                width: auto;
+                max-width: 350px;
+                margin: 0 auto;
+            }
         }
 
         @media (max-width: 600px) {
@@ -925,11 +1168,61 @@
                     <span>🌐</span>
                     <span id="langText">EN</span>
                 </button>
+                <button class="notification-toggle" onclick="toggleNotificationPanel()" id="notificationToggle">
+                    <span id="notificationIcon">🔔</span>
+                    <span id="notificationText">Уведомления</span>
+                    <span class="notification-badge" id="notificationBadge" style="display: none;">0</span>
+                </button>
             </div>
             <h1 id="mainTitle">Календарь праздников США и Канады 2026</h1>
             <div class="subtitle" id="subtitle">Федеральные, региональные и провинциальные нерабочие дни</div>
             <div class="source-info" id="sourceInfo">США: U.S. OPM; Онтарио: Ontario Ministry of Labour</div>
         </header>
+
+        <!-- Панель настроек уведомлений -->
+        <div class="notification-settings-panel" id="notificationPanel">
+            <div class="settings-header">
+                <h3 id="settingsTitle">Настройки уведомлений</h3>
+                <button class="close-settings" onclick="closeNotificationPanel()">&times;</button>
+            </div>
+
+            <div class="settings-option">
+                <div class="toggle-switch">
+                    <label for="notificationEnabled" id="enableLabel">Включить уведомления</label>
+                    <label class="switch">
+                        <input type="checkbox" id="notificationEnabled" onchange="toggleNotifications()">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="settings-option" id="daysBeforeOption">
+                <label id="daysBeforeLabel">Предупреждать за:</label>
+                <div class="notification-days">
+                    <div class="day-option" data-days="3" onclick="selectNotificationDays(3)">
+                        <div>3</div>
+                        <div style="font-size: 0.75em; opacity: 0.8;" id="daysText3">дня</div>
+                    </div>
+                    <div class="day-option selected" data-days="7" onclick="selectNotificationDays(7)">
+                        <div>7</div>
+                        <div style="font-size: 0.75em; opacity: 0.8;" id="daysText7">дней</div>
+                    </div>
+                    <div class="day-option" data-days="14" onclick="selectNotificationDays(14)">
+                        <div>14</div>
+                        <div style="font-size: 0.75em; opacity: 0.8;" id="daysText14">дней</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="upcoming-holidays-list">
+                <h4 id="upcomingTitle">Предстоящие праздники:</h4>
+                <div id="upcomingHolidaysList"></div>
+            </div>
+
+            <button class="test-notification-btn" onclick="testNotification()" id="testNotificationBtn">
+                Проверить уведомление
+            </button>
+        </div>
 
         <div class="stats-panel" id="statsPanel">
             <div class="stat-item">
@@ -1072,6 +1365,9 @@
         let currentTheme = localStorage.getItem('theme') || 'light';
         let currentViewMode = localStorage.getItem('viewMode') || 'grid';
         let activeFilter = 'all';
+        let notificationsEnabled = localStorage.getItem('notificationsEnabled') === 'true';
+        let notificationDaysBefore = parseInt(localStorage.getItem('notificationDaysBefore')) || 7;
+        let upcomingHolidays = [];
 
         // --- Объект переводов ---
         const translations = {
@@ -1111,7 +1407,23 @@
                 monthNames: ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'],
                 dayNames: ['Вс', 'Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб'],
                 tableHeaders: ['Дата', 'День недели', 'Название', 'Тип', 'Регион'],
-                holidayType: {federal: 'Федеральный (US)', state: 'Региональный (US)', ontario: 'Онтарио (CA)'}
+                holidayType: {federal: 'Федеральный (US)', state: 'Региональный (US)', ontario: 'Онтарио (CA)'},
+                notificationText: 'Уведомления',
+                settingsTitle: 'Настройки уведомлений',
+                enableLabel: 'Включить уведомления',
+                daysBeforeLabel: 'Предупреждать за:',
+                daysText3: 'дня',
+                daysText7: 'дней',
+                daysText14: 'дней',
+                upcomingTitle: 'Предстоящие праздники:',
+                testNotificationBtn: 'Проверить уведомление',
+                noUpcoming: 'Нет предстоящих праздников',
+                notificationTitle: 'Приближается праздник!',
+                notificationBody: (name, days) => `${name} через ${days} ${days === 1 ? 'день' : days < 5 ? 'дня' : 'дней'}!`,
+                testNotificationTitle: 'Тестовое уведомление',
+                testNotificationBody: 'Уведомления работают отлично!',
+                permissionDenied: 'Разрешение на уведомления отклонено',
+                inDays: (days) => `через ${days} ${days === 1 ? 'день' : days < 5 ? 'дня' : 'дней'}`
             },
             en: {
                 mainTitle: 'US & Canada Holiday Calendar 2026',
@@ -1149,7 +1461,23 @@
                 monthNames: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
                 dayNames: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
                 tableHeaders: ['Date', 'Day of Week', 'Name', 'Type', 'Region'],
-                holidayType: {federal: 'Federal (US)', state: 'Regional (US)', ontario: 'Ontario (CA)'}
+                holidayType: {federal: 'Federal (US)', state: 'Regional (US)', ontario: 'Ontario (CA)'},
+                notificationText: 'Notifications',
+                settingsTitle: 'Notification Settings',
+                enableLabel: 'Enable Notifications',
+                daysBeforeLabel: 'Notify before:',
+                daysText3: 'days',
+                daysText7: 'days',
+                daysText14: 'days',
+                upcomingTitle: 'Upcoming Holidays:',
+                testNotificationBtn: 'Test Notification',
+                noUpcoming: 'No upcoming holidays',
+                notificationTitle: 'Holiday Coming Up!',
+                notificationBody: (name, days) => `${name} in ${days} day${days === 1 ? '' : 's'}!`,
+                testNotificationTitle: 'Test Notification',
+                testNotificationBody: 'Notifications are working great!',
+                permissionDenied: 'Notification permission denied',
+                inDays: (days) => `in ${days} day${days === 1 ? '' : 's'}`
             }
         };
 
@@ -1332,7 +1660,177 @@
             const selectedCount = getSelectedStates().length;
             updateDropdownToggleText(selectedCount);
 
+            // Update notification panel
+            updateNotificationPanelLanguage();
+
             updateThemeButton();
+        }
+
+        // --- Функции уведомлений ---
+
+        function toggleNotificationPanel() {
+            const panel = document.getElementById('notificationPanel');
+            const isShown = panel.classList.contains('show');
+
+            if (isShown) {
+                closeNotificationPanel();
+            } else {
+                panel.classList.add('show');
+                updateUpcomingHolidaysList();
+            }
+        }
+
+        function closeNotificationPanel() {
+            document.getElementById('notificationPanel').classList.remove('show');
+        }
+
+        function toggleNotifications() {
+            notificationsEnabled = document.getElementById('notificationEnabled').checked;
+            localStorage.setItem('notificationsEnabled', notificationsEnabled);
+
+            const toggle = document.getElementById('notificationToggle');
+            if (notificationsEnabled) {
+                toggle.classList.add('active');
+                requestNotificationPermission();
+            } else {
+                toggle.classList.remove('active');
+            }
+
+            updateNotificationBadge();
+        }
+
+        function selectNotificationDays(days) {
+            notificationDaysBefore = days;
+            localStorage.setItem('notificationDaysBefore', days);
+
+            // Update UI
+            document.querySelectorAll('.day-option').forEach(opt => {
+                opt.classList.toggle('selected', parseInt(opt.dataset.days) === days);
+            });
+
+            updateUpcomingHolidaysList();
+            updateNotificationBadge();
+        }
+
+        function requestNotificationPermission() {
+            if (!("Notification" in window)) {
+                alert("Ваш браузер не поддерживает уведомления");
+                document.getElementById('notificationEnabled').checked = false;
+                notificationsEnabled = false;
+                return;
+            }
+
+            if (Notification.permission === "denied") {
+                const t = translations[currentLanguage];
+                alert(t.permissionDenied);
+                document.getElementById('notificationEnabled').checked = false;
+                notificationsEnabled = false;
+                return;
+            }
+
+            if (Notification.permission !== "granted") {
+                Notification.requestPermission().then(permission => {
+                    if (permission !== "granted") {
+                        document.getElementById('notificationEnabled').checked = false;
+                        notificationsEnabled = false;
+                        localStorage.setItem('notificationsEnabled', 'false');
+                    }
+                });
+            }
+        }
+
+        function updateUpcomingHolidaysList() {
+            const holidays = allHolidaysData;
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+
+            upcomingHolidays = holidays.filter(h => {
+                const holidayDate = new Date(h.date);
+                const daysUntil = Math.ceil((holidayDate - today) / (1000 * 60 * 60 * 24));
+                return daysUntil > 0 && daysUntil <= notificationDaysBefore;
+            }).sort((a, b) => new Date(a.date) - new Date(b.date));
+
+            const container = document.getElementById('upcomingHolidaysList');
+            const t = translations[currentLanguage];
+
+            if (upcomingHolidays.length === 0) {
+                container.innerHTML = `<div class="no-upcoming">${t.noUpcoming}</div>`;
+            } else {
+                let html = '';
+                upcomingHolidays.forEach(h => {
+                    const holidayDate = new Date(h.date);
+                    const daysUntil = Math.ceil((holidayDate - today) / (1000 * 60 * 60 * 24));
+                    const formatted = `${holidayDate.getDate()} ${monthNames[holidayDate.getMonth()]}`;
+
+                    html += `
+                        <div class="upcoming-holiday-item">
+                            <div class="upcoming-holiday-name">${h.name}</div>
+                            <div class="upcoming-holiday-date">${formatted} • ${t.inDays(daysUntil)}</div>
+                        </div>
+                    `;
+                });
+                container.innerHTML = html;
+            }
+
+            updateNotificationBadge();
+        }
+
+        function updateNotificationBadge() {
+            const badge = document.getElementById('notificationBadge');
+            const count = upcomingHolidays.length;
+
+            if (notificationsEnabled && count > 0) {
+                badge.textContent = count;
+                badge.style.display = 'block';
+            } else {
+                badge.style.display = 'none';
+            }
+        }
+
+        function testNotification() {
+            const t = translations[currentLanguage];
+
+            if (!("Notification" in window)) {
+                alert("Ваш браузер не поддерживает уведомления");
+                return;
+            }
+
+            if (Notification.permission === "granted") {
+                new Notification(t.testNotificationTitle, {
+                    body: t.testNotificationBody,
+                    icon: '🎉',
+                    tag: 'test-notification'
+                });
+            } else if (Notification.permission !== "denied") {
+                Notification.requestPermission().then(permission => {
+                    if (permission === "granted") {
+                        new Notification(t.testNotificationTitle, {
+                            body: t.testNotificationBody,
+                            icon: '🎉',
+                            tag: 'test-notification'
+                        });
+                    }
+                });
+            } else {
+                alert(t.permissionDenied);
+            }
+        }
+
+        function updateNotificationPanelLanguage() {
+            const t = translations[currentLanguage];
+
+            document.getElementById('notificationText').textContent = t.notificationText;
+            document.getElementById('settingsTitle').textContent = t.settingsTitle;
+            document.getElementById('enableLabel').textContent = t.enableLabel;
+            document.getElementById('daysBeforeLabel').textContent = t.daysBeforeLabel;
+            document.getElementById('upcomingTitle').textContent = t.upcomingTitle;
+            document.getElementById('testNotificationBtn').textContent = t.testNotificationBtn;
+
+            document.getElementById('daysText3').textContent = t.daysText3;
+            document.getElementById('daysText7').textContent = t.daysText7;
+            document.getElementById('daysText14').textContent = t.daysText14;
+
+            updateUpcomingHolidaysList();
         }
 
         // --- Функции статистики ---
@@ -1916,27 +2414,18 @@
             }
         };
 
-        // --- Функции уведомлений ---
+        // --- Старые функции уведомлений (обновленные) ---
 
         function checkUpcomingHolidays(holidays) {
+            if (!notificationsEnabled) return;
             if (!("Notification" in window)) return;
+            if (Notification.permission !== "granted") return;
 
-            if (Notification.permission === "default") {
-                // Спрашиваем разрешение только один раз
-                const asked = localStorage.getItem('notificationAsked');
-                if (!asked) {
-                    setTimeout(() => {
-                        Notification.requestPermission().then(permission => {
-                            localStorage.setItem('notificationAsked', 'true');
-                            if (permission === "granted") {
-                                scheduleNotifications(holidays);
-                            }
-                        });
-                    }, 3000);
-                }
-            } else if (Notification.permission === "granted") {
-                scheduleNotifications(holidays);
-            }
+            // Update upcoming holidays list
+            updateUpcomingHolidaysList();
+
+            // Schedule notifications
+            scheduleNotifications(holidays);
         }
 
         function scheduleNotifications(holidays) {
@@ -1946,19 +2435,17 @@
             const upcoming = holidays.filter(h => {
                 const holidayDate = new Date(h.date);
                 const daysUntil = Math.ceil((holidayDate - today) / (1000 * 60 * 60 * 24));
-                return daysUntil > 0 && daysUntil <= 7;
-            });
+                return daysUntil > 0 && daysUntil <= notificationDaysBefore;
+            }).sort((a, b) => new Date(a.date) - new Date(b.date));
 
-            if (upcoming.length > 0 && Notification.permission === "granted") {
+            if (upcoming.length > 0 && Notification.permission === "granted" && notificationsEnabled) {
                 const nextHoliday = upcoming[0];
                 const holidayDate = new Date(nextHoliday.date);
                 const daysUntil = Math.ceil((holidayDate - today) / (1000 * 60 * 60 * 24));
 
-                const message = currentLanguage === 'ru'
-                    ? `${nextHoliday.name} через ${daysUntil} ${daysUntil === 1 ? 'день' : 'дней'}!`
-                    : `${nextHoliday.name} in ${daysUntil} day${daysUntil === 1 ? '' : 's'}!`;
-
-                const title = currentLanguage === 'ru' ? 'Приближается праздник!' : 'Upcoming Holiday!';
+                const t = translations[currentLanguage];
+                const message = t.notificationBody(nextHoliday.name, daysUntil);
+                const title = t.notificationTitle;
 
                 // Показываем уведомление только если прошло более 24 часов с последнего
                 const lastNotification = localStorage.getItem('lastNotification');
@@ -1986,11 +2473,33 @@
             // Apply saved view mode
             setViewMode(currentViewMode);
 
+            // Initialize notification settings
+            document.getElementById('notificationEnabled').checked = notificationsEnabled;
+            if (notificationsEnabled) {
+                document.getElementById('notificationToggle').classList.add('active');
+            }
+
+            // Set selected notification days
+            document.querySelectorAll('.day-option').forEach(opt => {
+                opt.classList.toggle('selected', parseInt(opt.dataset.days) === notificationDaysBefore);
+            });
+
             // Initialize states
             initStates();
 
             // Update calendar
             updateCalendar();
+
+            // Close notification panel on outside click
+            document.addEventListener('click', function(event) {
+                const panel = document.getElementById('notificationPanel');
+                const toggle = document.getElementById('notificationToggle');
+                if (panel.classList.contains('show') &&
+                    !panel.contains(event.target) &&
+                    !toggle.contains(event.target)) {
+                    closeNotificationPanel();
+                }
+            });
         }
 
         // Start app when DOM is ready
