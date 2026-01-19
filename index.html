@@ -1210,6 +1210,205 @@
             text-decoration: underline;
         }
 
+        /* --- Стили для списка пользователей --- */
+        .user-list-container {
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 10px;
+            background: var(--bg-controls);
+            margin-top: 10px;
+        }
+
+        .user-add-form {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 10px;
+        }
+
+        .user-add-input {
+            flex: 1;
+            padding: 8px 10px;
+            border: 2px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 0.9em;
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+        }
+
+        .user-add-input:focus {
+            outline: none;
+            border-color: var(--accent-color);
+        }
+
+        .user-add-btn {
+            padding: 8px 16px;
+            background: var(--accent-color);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.9em;
+            transition: all 0.2s;
+        }
+
+        .user-add-btn:hover {
+            opacity: 0.9;
+        }
+
+        .user-list {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .user-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 8px 10px;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            transition: all 0.2s;
+        }
+
+        .user-item:hover {
+            border-color: var(--accent-color);
+        }
+
+        .user-item-info {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex: 1;
+        }
+
+        .user-role-badge {
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 0.75em;
+            font-weight: 600;
+        }
+
+        .user-role-badge.responsible {
+            background: #e3f2fd;
+            color: #1565c0;
+        }
+
+        .user-role-badge.accomplice {
+            background: #f3e5f5;
+            color: #7b1fa2;
+        }
+
+        .user-role-badge.auditor {
+            background: #fff3e0;
+            color: #ef6c00;
+        }
+
+        [data-theme="dark"] .user-role-badge.responsible {
+            background: #1a237e;
+            color: #90caf9;
+        }
+
+        [data-theme="dark"] .user-role-badge.accomplice {
+            background: #4a148c;
+            color: #ce93d8;
+        }
+
+        [data-theme="dark"] .user-role-badge.auditor {
+            background: #e65100;
+            color: #ffb74d;
+        }
+
+        .user-id-text {
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .user-name-text {
+            color: var(--text-secondary);
+            font-size: 0.9em;
+        }
+
+        .user-item-actions {
+            display: flex;
+            gap: 6px;
+        }
+
+        .user-action-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.85em;
+            transition: all 0.2s;
+            color: var(--text-secondary);
+        }
+
+        .user-action-btn:hover {
+            background: var(--bg-controls);
+            color: var(--text-primary);
+        }
+
+        .user-remove-btn {
+            color: #d32f2f;
+        }
+
+        .user-remove-btn:hover {
+            background: #ffebee;
+            color: #c62828;
+        }
+
+        [data-theme="dark"] .user-remove-btn:hover {
+            background: #b71c1c;
+            color: #ef9a9a;
+        }
+
+        .task-mode-selector {
+            display: flex;
+            gap: 8px;
+            margin-top: 10px;
+        }
+
+        .task-mode-option {
+            flex: 1;
+            padding: 10px;
+            border: 2px solid var(--border-color);
+            border-radius: 6px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            background: var(--bg-secondary);
+        }
+
+        .task-mode-option:hover {
+            border-color: var(--accent-color);
+        }
+
+        .task-mode-option.selected {
+            border-color: var(--accent-color);
+            background: var(--accent-color);
+            color: white;
+        }
+
+        .task-mode-option .mode-icon {
+            font-size: 1.5em;
+            margin-bottom: 4px;
+        }
+
+        .task-mode-option .mode-title {
+            font-weight: 600;
+            font-size: 0.9em;
+            margin-bottom: 2px;
+        }
+
+        .task-mode-option .mode-desc {
+            font-size: 0.75em;
+            opacity: 0.8;
+        }
+
         /* --- Модальное окно (стили заголовков модального окна) --- */
         .modal {
             display: none;
@@ -1478,9 +1677,32 @@
             </div>
 
             <div class="bitrix-input-group">
-                <label for="bitrixResponsible" id="bitrixResponsibleLabel">ID ответственного:</label>
-                <input type="number" id="bitrixResponsible" placeholder="1">
-                <small id="bitrixResponsibleHelp">ID пользователя Битрикс24</small>
+                <label id="bitrixUsersLabel">Пользователи задачи:</label>
+                <small id="bitrixUsersHelp">Добавьте ID пользователей Битрикс24. Первый будет ответственным.</small>
+
+                <div class="user-list-container">
+                    <div class="user-add-form">
+                        <input type="number" id="userIdInput" class="user-add-input" placeholder="ID пользователя" min="1">
+                        <button class="user-add-btn" onclick="addBitrixUser()" id="addUserBtn">+ Добавить</button>
+                    </div>
+                    <div class="user-list" id="bitrixUserList"></div>
+                </div>
+            </div>
+
+            <div class="bitrix-input-group">
+                <label id="bitrixTaskModeLabel">Режим создания задач:</label>
+                <div class="task-mode-selector">
+                    <div class="task-mode-option selected" data-mode="single" onclick="selectTaskMode('single')">
+                        <div class="mode-icon">📋</div>
+                        <div class="mode-title" id="modeSingleTitle">Одна задача</div>
+                        <div class="mode-desc" id="modeSingleDesc">С соисполнителями</div>
+                    </div>
+                    <div class="task-mode-option" data-mode="multiple" onclick="selectTaskMode('multiple')">
+                        <div class="mode-icon">📋📋</div>
+                        <div class="mode-title" id="modeMultipleTitle">Отдельные</div>
+                        <div class="mode-desc" id="modeMultipleDesc">Для каждого</div>
+                    </div>
+                </div>
             </div>
 
             <div class="bitrix-input-group">
@@ -1685,7 +1907,8 @@
         let bitrixWebhookUrl = localStorage.getItem('bitrixWebhookUrl') || '';
         let bitrixTaskTitle = localStorage.getItem('bitrixTaskTitle') || 'Подготовка к {holiday} - проверка работы препцентров';
         let bitrixTaskDescription = localStorage.getItem('bitrixTaskDescription') || '';
-        let bitrixResponsibleId = localStorage.getItem('bitrixResponsibleId') || '1';
+        let bitrixUsers = JSON.parse(localStorage.getItem('bitrixUsers') || '[{"id": 1, "name": "", "role": "responsible"}]');
+        let bitrixTaskMode = localStorage.getItem('bitrixTaskMode') || 'single'; // 'single' or 'multiple'
         let bitrixDaysBefore = parseInt(localStorage.getItem('bitrixDaysBefore')) || 7;
         let bitrixAutoCreate = localStorage.getItem('bitrixAutoCreate') === 'true';
         let bitrixHolidayTypes = JSON.parse(localStorage.getItem('bitrixHolidayTypes') || '["federal","ontario"]');
@@ -1756,8 +1979,18 @@
                 bitrixTaskTitleLabel: 'Шаблон названия задачи:',
                 bitrixTaskTitleHelp: '{holiday} - название праздника, {date} - дата',
                 bitrixTaskDescLabel: 'Описание задачи:',
-                bitrixResponsibleLabel: 'ID ответственного:',
-                bitrixResponsibleHelp: 'ID пользователя Битрикс24',
+                bitrixUsersLabel: 'Пользователи задачи:',
+                bitrixUsersHelp: 'Добавьте ID пользователей Битрикс24. Первый будет ответственным.',
+                addUserBtn: '+ Добавить',
+                bitrixTaskModeLabel: 'Режим создания задач:',
+                modeSingleTitle: 'Одна задача',
+                modeSingleDesc: 'С соисполнителями',
+                modeMultipleTitle: 'Отдельные',
+                modeMultipleDesc: 'Для каждого',
+                userPlaceholder: 'ID пользователя',
+                roleResponsible: 'Ответственный',
+                roleAccomplice: 'Соисполнитель',
+                roleAuditor: 'Наблюдатель',
                 bitrixDaysBeforeLabel: 'Создавать задачу за (дней):',
                 bitrixAutoLabel: 'Автоматическое создание задач',
                 bitrixFilterLabel: 'Создавать задачи для праздников:',
@@ -1833,8 +2066,18 @@
                 bitrixTaskTitleLabel: 'Task title template:',
                 bitrixTaskTitleHelp: '{holiday} - holiday name, {date} - date',
                 bitrixTaskDescLabel: 'Task description:',
-                bitrixResponsibleLabel: 'Responsible ID:',
-                bitrixResponsibleHelp: 'Bitrix24 user ID',
+                bitrixUsersLabel: 'Task users:',
+                bitrixUsersHelp: 'Add Bitrix24 user IDs. First will be responsible.',
+                addUserBtn: '+ Add',
+                bitrixTaskModeLabel: 'Task creation mode:',
+                modeSingleTitle: 'Single task',
+                modeSingleDesc: 'With accomplices',
+                modeMultipleTitle: 'Separate',
+                modeMultipleDesc: 'For each user',
+                userPlaceholder: 'User ID',
+                roleResponsible: 'Responsible',
+                roleAccomplice: 'Accomplice',
+                roleAuditor: 'Auditor',
                 bitrixDaysBeforeLabel: 'Create task (days before):',
                 bitrixAutoLabel: 'Automatic task creation',
                 bitrixFilterLabel: 'Create tasks for holidays:',
@@ -2228,9 +2471,16 @@
             document.getElementById('bitrixWebhook').value = bitrixWebhookUrl;
             document.getElementById('bitrixTaskTitle').value = bitrixTaskTitle;
             document.getElementById('bitrixTaskDescription').value = bitrixTaskDescription;
-            document.getElementById('bitrixResponsible').value = bitrixResponsibleId;
             document.getElementById('bitrixDaysBefore').value = bitrixDaysBefore;
             document.getElementById('bitrixAutoCreate').checked = bitrixAutoCreate;
+
+            // Load users
+            renderBitrixUserList();
+
+            // Load task mode
+            document.querySelectorAll('.task-mode-option').forEach(opt => {
+                opt.classList.toggle('selected', opt.dataset.mode === bitrixTaskMode);
+            });
 
             // Load holiday type filters
             document.getElementById('bitrix_federal').checked = bitrixHolidayTypes.includes('federal');
@@ -2240,13 +2490,113 @@
             updateBitrixConnectionStatus();
         }
 
+        function addBitrixUser() {
+            const input = document.getElementById('userIdInput');
+            const userId = parseInt(input.value);
+
+            if (!userId || userId < 1) {
+                alert('Введите корректный ID пользователя');
+                return;
+            }
+
+            // Check if user already exists
+            if (bitrixUsers.some(u => u.id === userId)) {
+                alert('Этот пользователь уже добавлен');
+                return;
+            }
+
+            // Determine role
+            const role = bitrixUsers.length === 0 ? 'responsible' : 'accomplice';
+
+            bitrixUsers.push({
+                id: userId,
+                name: '',
+                role: role
+            });
+
+            input.value = '';
+            renderBitrixUserList();
+        }
+
+        function removeBitrixUser(userId) {
+            const index = bitrixUsers.findIndex(u => u.id === userId);
+            if (index === -1) return;
+
+            bitrixUsers.splice(index, 1);
+
+            // If removed responsible, make first user responsible
+            if (bitrixUsers.length > 0 && !bitrixUsers.some(u => u.role === 'responsible')) {
+                bitrixUsers[0].role = 'responsible';
+            }
+
+            renderBitrixUserList();
+        }
+
+        function changeUserRole(userId, newRole) {
+            const user = bitrixUsers.find(u => u.id === userId);
+            if (!user) return;
+
+            // If changing to responsible, demote current responsible
+            if (newRole === 'responsible') {
+                bitrixUsers.forEach(u => {
+                    if (u.role === 'responsible') u.role = 'accomplice';
+                });
+            }
+
+            user.role = newRole;
+            renderBitrixUserList();
+        }
+
+        function renderBitrixUserList() {
+            const container = document.getElementById('bitrixUserList');
+            const t = translations[currentLanguage];
+
+            if (bitrixUsers.length === 0) {
+                container.innerHTML = `<div style="text-align: center; padding: 15px; color: var(--text-secondary); font-size: 0.9em;">${t.noUpcoming || 'Пользователи не добавлены'}</div>`;
+                return;
+            }
+
+            let html = '';
+            bitrixUsers.forEach(user => {
+                const roleLabel = t[`role${user.role.charAt(0).toUpperCase() + user.role.slice(1)}`] || user.role;
+
+                html += `
+                    <div class="user-item">
+                        <div class="user-item-info">
+                            <span class="user-role-badge ${user.role}">${roleLabel}</span>
+                            <span class="user-id-text">ID: ${user.id}</span>
+                            ${user.name ? `<span class="user-name-text">${user.name}</span>` : ''}
+                        </div>
+                        <div class="user-item-actions">
+                            ${user.role !== 'responsible' ? `<button class="user-action-btn" onclick="changeUserRole(${user.id}, 'responsible')" title="Сделать ответственным">⭐</button>` : ''}
+                            ${bitrixUsers.length > 1 ? `<button class="user-action-btn user-remove-btn" onclick="removeBitrixUser(${user.id})" title="Удалить">✕</button>` : ''}
+                        </div>
+                    </div>
+                `;
+            });
+
+            container.innerHTML = html;
+        }
+
+        function selectTaskMode(mode) {
+            bitrixTaskMode = mode;
+            document.querySelectorAll('.task-mode-option').forEach(opt => {
+                opt.classList.toggle('selected', opt.dataset.mode === mode);
+            });
+        }
+
         function saveBitrixSettings() {
             bitrixWebhookUrl = document.getElementById('bitrixWebhook').value.trim();
             bitrixTaskTitle = document.getElementById('bitrixTaskTitle').value;
             bitrixTaskDescription = document.getElementById('bitrixTaskDescription').value;
-            bitrixResponsibleId = document.getElementById('bitrixResponsible').value;
             bitrixDaysBefore = parseInt(document.getElementById('bitrixDaysBefore').value);
             bitrixAutoCreate = document.getElementById('bitrixAutoCreate').checked;
+
+            // Validate users
+            if (bitrixUsers.length === 0) {
+                alert('Добавьте хотя бы одного пользователя');
+                return;
+            }
 
             // Save holiday type filters
             bitrixHolidayTypes = [];
@@ -2258,7 +2608,8 @@
             localStorage.setItem('bitrixWebhookUrl', bitrixWebhookUrl);
             localStorage.setItem('bitrixTaskTitle', bitrixTaskTitle);
             localStorage.setItem('bitrixTaskDescription', bitrixTaskDescription);
-            localStorage.setItem('bitrixResponsibleId', bitrixResponsibleId);
+            localStorage.setItem('bitrixUsers', JSON.stringify(bitrixUsers));
+            localStorage.setItem('bitrixTaskMode', bitrixTaskMode);
             localStorage.setItem('bitrixDaysBefore', bitrixDaysBefore);
             localStorage.setItem('bitrixAutoCreate', bitrixAutoCreate);
             localStorage.setItem('bitrixHolidayTypes', JSON.stringify(bitrixHolidayTypes));
@@ -2362,11 +2713,19 @@
 
             // Create tasks
             for (const holiday of holidaysNeedingTasks) {
-                await createBitrixTask(holiday);
+                if (bitrixTaskMode === 'multiple') {
+                    // Create separate task for each user
+                    for (const user of bitrixUsers) {
+                        await createBitrixTask(holiday, user);
+                    }
+                } else {
+                    // Create single task with accomplices
+                    await createBitrixTask(holiday, null);
+                }
             }
         }
 
-        async function createBitrixTask(holiday) {
+        async function createBitrixTask(holiday, specificUser = null) {
             const t = translations[currentLanguage];
 
             try {
@@ -2385,18 +2744,42 @@
                 // Calculate deadline (holiday date)
                 const deadline = holidayDate.toISOString().split('T')[0];
 
+                // Prepare task fields
+                let taskFields = {
+                    TITLE: title,
+                    DESCRIPTION: description,
+                    DEADLINE: deadline,
+                    TAGS: ['праздник', 'препцентр', 'автоматическая']
+                };
+
+                // Determine responsible and accomplices
+                if (specificUser) {
+                    // Multiple mode: each user gets their own task
+                    taskFields.RESPONSIBLE_ID = specificUser.id;
+                } else {
+                    // Single mode: one task with accomplices
+                    const responsible = bitrixUsers.find(u => u.role === 'responsible');
+                    taskFields.RESPONSIBLE_ID = responsible ? responsible.id : bitrixUsers[0].id;
+
+                    // Add accomplices
+                    const accomplices = bitrixUsers.filter(u => u.role === 'accomplice' || (u.role !== 'responsible' && u.id !== taskFields.RESPONSIBLE_ID));
+                    if (accomplices.length > 0) {
+                        taskFields.ACCOMPLICES = accomplices.map(u => u.id);
+                    }
+
+                    // Add auditors if any
+                    const auditors = bitrixUsers.filter(u => u.role === 'auditor');
+                    if (auditors.length > 0) {
+                        taskFields.AUDITORS = auditors.map(u => u.id);
+                    }
+                }
+
                 // Create task via Bitrix24 REST API
                 const response = await fetch(`${bitrixWebhookUrl}/tasks.task.add`, {
                     method: 'POST',
                     headers: {'Content-Type': 'application/json'},
                     body: JSON.stringify({
-                        fields: {
-                            TITLE: title,
-                            DESCRIPTION: description,
-                            RESPONSIBLE_ID: bitrixResponsibleId,
-                            DEADLINE: deadline,
-                            TAGS: ['праздник', 'препцентр', 'автоматическая']
-                        }
+                        fields: taskFields
                     })
                 });
 
@@ -2404,7 +2787,9 @@
 
                 if (data.result && data.result.task) {
                     const taskId = data.result.task.id;
-                    const taskKey = `${holiday.date}_${holiday.name}`;
+                    const taskKey = specificUser
+                        ? `${holiday.date}_${holiday.name}_${specificUser.id}`
+                        : `${holiday.date}_${holiday.name}`;
 
                     // Save to created tasks log
                     bitrixCreatedTasks.push({
@@ -2412,6 +2797,7 @@
                         taskId: taskId,
                         holidayName: holiday.name,
                         holidayDate: formattedDate,
+                        responsibleId: taskFields.RESPONSIBLE_ID,
                         createdAt: new Date().toISOString()
                     });
 
@@ -2465,8 +2851,20 @@
             document.getElementById('bitrixTaskTitleLabel').textContent = t.bitrixTaskTitleLabel;
             document.getElementById('bitrixTaskTitleHelp').textContent = t.bitrixTaskTitleHelp;
             document.getElementById('bitrixTaskDescLabel').textContent = t.bitrixTaskDescLabel;
-            document.getElementById('bitrixResponsibleLabel').textContent = t.bitrixResponsibleLabel;
-            document.getElementById('bitrixResponsibleHelp').textContent = t.bitrixResponsibleHelp;
+
+            // Users section
+            document.getElementById('bitrixUsersLabel').textContent = t.bitrixUsersLabel;
+            document.getElementById('bitrixUsersHelp').textContent = t.bitrixUsersHelp;
+            document.getElementById('addUserBtn').textContent = t.addUserBtn;
+            document.getElementById('userIdInput').placeholder = t.userPlaceholder;
+
+            // Task mode section
+            document.getElementById('bitrixTaskModeLabel').textContent = t.bitrixTaskModeLabel;
+            document.getElementById('modeSingleTitle').textContent = t.modeSingleTitle;
+            document.getElementById('modeSingleDesc').textContent = t.modeSingleDesc;
+            document.getElementById('modeMultipleTitle').textContent = t.modeMultipleTitle;
+            document.getElementById('modeMultipleDesc').textContent = t.modeMultipleDesc;
+
             document.getElementById('bitrixDaysBeforeLabel').textContent = t.bitrixDaysBeforeLabel;
             document.getElementById('bitrixAutoLabel').textContent = t.bitrixAutoLabel;
             document.getElementById('bitrixFilterLabel').textContent = t.bitrixFilterLabel;
@@ -2475,6 +2873,7 @@
             document.getElementById('bitrixLogTitle').textContent = t.bitrixLogTitle;
 
             updateBitrixConnectionStatus();
+            renderBitrixUserList();
             updateBitrixTaskLog();
         }
 
