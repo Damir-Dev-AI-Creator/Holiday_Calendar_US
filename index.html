@@ -5,6 +5,33 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Календарь праздников США и Онтарио 2026</title>
     <style>
+        /* --- CSS Variables для тем --- */
+        :root {
+            --bg-primary: #f0f4f8;
+            --bg-secondary: white;
+            --bg-controls: #f8f9fa;
+            --text-primary: #374151;
+            --text-secondary: #546e7a;
+            --border-color: #e0e6ed;
+            --border-light: #eceff1;
+            --shadow-light: rgba(45, 60, 80, 0.1);
+            --accent-color: #3f51b5;
+            --weekend-bg: #f8bbd0;
+        }
+
+        [data-theme="dark"] {
+            --bg-primary: #1a1d2e;
+            --bg-secondary: #252a3f;
+            --bg-controls: #2d3350;
+            --text-primary: #e8eaed;
+            --text-secondary: #b0b8c5;
+            --border-color: #3d4461;
+            --border-light: #2f3549;
+            --shadow-light: rgba(0, 0, 0, 0.3);
+            --accent-color: #7986cb;
+            --weekend-bg: #3d2f3f;
+        }
+
         /* --- Общие стили --- */
         * {
             margin: 0;
@@ -14,26 +41,65 @@
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
-            background: #f0f4f8; /* Очень светлый, мягкий фон */
+            background: var(--bg-primary);
             min-height: 100vh;
             padding: 20px;
+            transition: background 0.3s ease, color 0.3s ease;
+            color: var(--text-primary);
         }
 
         .container {
             max-width: 1400px;
             margin: 0 auto;
-            background: white;
+            background: var(--bg-secondary);
             border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(45, 60, 80, 0.1);
+            box-shadow: 0 10px 30px var(--shadow-light);
             overflow: hidden;
+            transition: background 0.3s ease, box-shadow 0.3s ease;
         }
 
         /* --- Стили шапки и заголовков (Мягкий Индиго) --- */
         header {
             background: linear-gradient(135deg, #5c6bc0 0%, #7986cb 100%); /* Софт-Индиго */
             color: white;
-            padding: 30px;
+            padding: 50px 30px;
             text-align: center;
+            position: relative;
+        }
+
+        .header-controls {
+            position: absolute;
+            top: 25px;
+            right: 20px;
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .theme-toggle, .lang-toggle, .bitrix-toggle {
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid rgba(255, 255, 255, 0.4);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: all 0.3s;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            position: relative;
+        }
+
+        .theme-toggle:hover, .lang-toggle:hover, .bitrix-toggle:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .bitrix-toggle.connected {
+            background: rgba(33, 150, 243, 0.4);
+            border-color: rgba(33, 150, 243, 0.6);
         }
 
         h1 {
@@ -56,22 +122,163 @@
 
         .controls {
             padding: 25px;
-            background: #f8f9fa;
-            border-bottom: 1px solid #e0e6ed;
+            background: var(--bg-controls);
+            border-bottom: 1px solid var(--border-color);
             display: flex;
             gap: 30px;
             flex-wrap: wrap;
+            transition: background 0.3s ease, border-color 0.3s ease;
         }
 
         .control-group {
-            flex: 1 1 45%; 
+            flex: 1 1 45%;
             min-width: 300px;
         }
 
         .control-group h3 {
-            color: #3f51b5;
+            color: var(--accent-color);
             margin-bottom: 12px;
             font-size: 1.15em;
+        }
+
+        /* --- Статистическая панель --- */
+        .stats-panel {
+            padding: 20px 25px;
+            background: linear-gradient(135deg, var(--accent-color) 0%, #7986cb 100%);
+            color: white;
+            display: flex;
+            gap: 30px;
+            flex-wrap: wrap;
+            justify-content: space-around;
+            align-items: center;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 10px 20px;
+        }
+
+        .stat-number {
+            font-size: 2.5em;
+            font-weight: 700;
+            line-height: 1;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 0.9em;
+            opacity: 0.9;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* --- Режимы просмотра и поиск --- */
+        .view-controls {
+            padding: 20px 25px;
+            background: var(--bg-controls);
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .view-modes {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .view-mode-label {
+            font-weight: 600;
+            color: var(--text-secondary);
+            margin-right: 5px;
+        }
+
+        .view-mode-btn {
+            padding: 8px 16px;
+            background: var(--bg-secondary);
+            border: 2px solid var(--border-color);
+            color: var(--text-primary);
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9em;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+
+        .view-mode-btn:hover {
+            border-color: var(--accent-color);
+            background: var(--accent-color);
+            color: white;
+        }
+
+        .view-mode-btn.active {
+            background: var(--accent-color);
+            color: white;
+            border-color: var(--accent-color);
+        }
+
+        .search-container {
+            flex: 1;
+            min-width: 250px;
+            max-width: 400px;
+            position: relative;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 10px 40px 10px 15px;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 0.95em;
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            transition: all 0.2s;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 3px rgba(63, 81, 181, 0.1);
+        }
+
+        .search-icon {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-secondary);
+            pointer-events: none;
+        }
+
+        .filter-chips {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .filter-chip {
+            padding: 6px 12px;
+            background: var(--bg-secondary);
+            border: 2px solid var(--border-color);
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.85em;
+            font-weight: 600;
+            color: var(--text-primary);
+            transition: all 0.2s;
+        }
+
+        .filter-chip:hover {
+            border-color: var(--accent-color);
+        }
+
+        .filter-chip.active {
+            background: var(--accent-color);
+            color: white;
+            border-color: var(--accent-color);
         }
         
         /* --- Dropdown Стили (без изменений) --- */
@@ -85,20 +292,20 @@
         .dropdown-toggle {
             width: 100%;
             text-align: left;
-            background: #ffffff;
-            border: 1px solid #ced4da;
-            color: #495057;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
             padding: 10px 15px;
             border-radius: 6px;
             cursor: pointer;
             font-size: 1em;
             font-weight: 400;
-            transition: background 0.2s, border-color 0.2s;
+            transition: all 0.2s;
         }
 
         .dropdown-toggle:hover {
-            background: #f8f9fa;
-            border-color: #a0a8ae;
+            background: var(--bg-controls);
+            border-color: var(--accent-color);
         }
 
         .dropdown-menu {
@@ -106,13 +313,13 @@
             top: 100%;
             left: 0;
             width: 100%;
-            background: white;
-            border: 1px solid #ced4da;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
             border-radius: 6px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            box-shadow: 0 4px 12px var(--shadow-light);
             z-index: 1000;
             padding: 10px;
-            display: none; 
+            display: none;
             margin-top: 5px;
         }
 
@@ -124,14 +331,16 @@
             width: 100%;
             padding: 10px 10px;
             margin-bottom: 10px;
-            border: 1px solid #dee2e6;
+            border: 1px solid var(--border-color);
             border-radius: 4px;
             font-size: 0.95em;
             outline: none;
+            background: var(--bg-secondary);
+            color: var(--text-primary);
         }
-        
+
         #stateSearch:focus {
-            border-color: #3f51b5;
+            border-color: var(--accent-color);
             box-shadow: 0 0 0 2px rgba(63, 81, 181, 0.2);
         }
 
@@ -148,7 +357,7 @@
 
         .state-grid-dropdown .state-item {
             padding: 8px 5px;
-            border-bottom: 1px solid #f1f1f1;
+            border-bottom: 1px solid var(--border-light);
             display: flex;
             align-items: center;
         }
@@ -167,6 +376,7 @@
         .state-item label {
             cursor: pointer;
             flex: 1;
+            color: var(--text-primary);
         }
 
         .button-group {
@@ -206,19 +416,19 @@
         }
         
         .ontario-control {
-            border: 1px solid #cfd8dc;
+            border: 1px solid var(--border-color);
             padding: 15px;
             border-radius: 8px;
-            background: #fff;
+            background: var(--bg-secondary);
         }
-        
+
         .ontario-control label {
             font-weight: 500;
             display: flex;
             align-items: center;
             gap: 8px;
             cursor: pointer;
-            color: #3f51b5;
+            color: var(--accent-color);
         }
 
         /* --- Стили для календаря (2 колонки) --- */
@@ -235,19 +445,25 @@
         .month {
             margin-bottom: 20px;
             page-break-inside: avoid;
-            border: 1px solid #cfd8dc;
+            border: 1px solid var(--border-color);
             border-radius: 8px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            box-shadow: 0 2px 5px var(--shadow-light);
             overflow: hidden;
+            background: var(--bg-secondary);
         }
 
         /* Заголовок месяца (Светло-Индиго) */
         .month-header {
-            background: #c5cae9; 
+            background: linear-gradient(135deg, #c5cae9 0%, #b3b9e5 100%);
             color: #3949ab;
             padding: 10px 15px;
             font-size: 1.2em;
             font-weight: 700;
+        }
+
+        [data-theme="dark"] .month-header {
+            background: linear-gradient(135deg, #3d4461 0%, #4a5072 100%);
+            color: #b3bce8;
         }
 
         .month-grid {
@@ -259,16 +475,16 @@
 
         /* Заголовок дня (Единая высота для ровной сетки) */
         .day-header {
-            background: #eceff1;
+            background: var(--bg-controls);
             padding: 8px 5px;
             height: 35px; /* Фиксированная высота */
-            line-height: 18px; 
+            line-height: 18px;
             text-align: center;
             font-weight: 600;
             font-size: 0.8em;
-            color: #546e7a;
-            border-right: 1px solid #cfd8dc;
-            border-bottom: 1px solid #cfd8dc;
+            color: var(--text-secondary);
+            border-right: 1px solid var(--border-color);
+            border-bottom: 1px solid var(--border-color);
         }
 
         .day-header:last-child {
@@ -279,9 +495,9 @@
         .day-cell {
             min-height: 80px; /* Фиксированный минимальный размер */
             padding: 5px;
-            border-right: 1px solid #eceff1;
-            border-bottom: 1px solid #eceff1;
-            background: white;
+            border-right: 1px solid var(--border-light);
+            border-bottom: 1px solid var(--border-light);
+            background: var(--bg-secondary);
             position: relative;
             cursor: default;
             display: flex; /* Для вертикального выравнивания контента */
@@ -292,10 +508,10 @@
             cursor: pointer;
             transition: background 0.2s, box-shadow 0.2s;
         }
-        
+
         .day-cell.holiday-cell:hover {
-            background: #f5f5f5;
-            box-shadow: inset 0 0 0 1px #90a4ae;
+            background: var(--bg-controls);
+            box-shadow: inset 0 0 0 1px var(--accent-color);
         }
 
         .day-cell:nth-child(7n) {
@@ -306,12 +522,13 @@
             font-weight: 600;
             font-size: 0.9em;
             margin-bottom: 4px;
-            color: #374151;
+            color: var(--text-primary);
             flex-shrink: 0; /* Чтобы не сжимался при длинных праздниках */
         }
 
         .empty-day {
-            background: #f8f9fa;
+            background: var(--bg-controls);
+            opacity: 0.5;
         }
 
         /* Маркер праздника (Стилизация длинных названий) */
@@ -348,8 +565,172 @@
         }
 
         .weekend {
-            background: #f8bbd0; /* Светло-розовый */
+            background: var(--weekend-bg);
         }
+
+        /* --- Режимы просмотра: Список и Таблица --- */
+        .calendar-grid-container {
+            display: none;
+        }
+
+        .calendar-grid-container.active {
+            display: grid;
+        }
+
+        .list-view {
+            display: none;
+        }
+
+        .list-view.active {
+            display: block;
+        }
+
+        .holiday-list {
+            padding: 20px;
+        }
+
+        .holiday-list-item {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 15px 20px;
+            margin-bottom: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.2s;
+        }
+
+        .holiday-list-item:hover {
+            box-shadow: 0 2px 8px var(--shadow-light);
+            transform: translateY(-2px);
+        }
+
+        .holiday-date-info {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .holiday-date-box {
+            background: var(--accent-color);
+            color: white;
+            padding: 10px 15px;
+            border-radius: 8px;
+            text-align: center;
+            min-width: 80px;
+        }
+
+        .holiday-day {
+            font-size: 1.8em;
+            font-weight: 700;
+            line-height: 1;
+        }
+
+        .holiday-month {
+            font-size: 0.9em;
+            opacity: 0.9;
+            text-transform: uppercase;
+        }
+
+        .holiday-details {
+            flex: 1;
+        }
+
+        .holiday-name {
+            font-size: 1.1em;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 4px;
+        }
+
+        .holiday-type {
+            font-size: 0.85em;
+            color: var(--text-secondary);
+        }
+
+        .table-view {
+            display: none;
+        }
+
+        .table-view.active {
+            display: block;
+        }
+
+        .holiday-table {
+            width: 100%;
+            padding: 20px;
+        }
+
+        .holiday-table table {
+            width: 100%;
+            border-collapse: collapse;
+            background: var(--bg-secondary);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .holiday-table th {
+            background: var(--accent-color);
+            color: white;
+            padding: 12px 15px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 0.95em;
+        }
+
+        .holiday-table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid var(--border-light);
+            color: var(--text-primary);
+        }
+
+        .holiday-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .holiday-table tr:hover {
+            background: var(--bg-controls);
+        }
+
+        .table-badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 0.8em;
+            font-weight: 600;
+        }
+
+        .badge-federal {
+            background: #bbdefb;
+            color: #1a237e;
+        }
+
+        .badge-state {
+            background: #ffe0b2;
+            color: #e65100;
+        }
+
+        .badge-ontario {
+            background: #e1bee7;
+            color: #4a148c;
+        }
+
+        [data-theme="dark"] .badge-federal {
+            background: #1e3a5f;
+            color: #90caf9;
+        }
+
+        [data-theme="dark"] .badge-state {
+            background: #4a2c0a;
+            color: #ffb74d;
+        }
+
+        [data-theme="dark"] .badge-ontario {
+            background: #3a1f47;
+            color: #ce93d8;
+        }
+
         /* --- Конец Стили для календаря --- */
 
         /* --- Стили для Легенды (Включая цветные квадраты) --- */
@@ -357,31 +738,538 @@
             display: flex;
             gap: 20px;
             padding: 20px;
-            background: #f8f9fa;
+            background: var(--bg-controls);
             border-radius: 8px;
             margin-top: 30px;
             flex-wrap: wrap;
-            border: 1px solid #e0e6ed;
+            border: 1px solid var(--border-color);
             align-items: center; /* Выравнивание элементов легенды по центру */
         }
-        
+
         .legend-item {
             display: flex;
             align-items: center;
             gap: 8px;
             font-size: 0.95em;
+            color: var(--text-primary);
         }
-        
+
         .legend-box {
             width: 18px;
             height: 18px;
             border-radius: 4px;
             /* Стили рамки будут добавлены через inline-style для соответствия цветам праздников */
         }
-        
+
+        .settings-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        .settings-header h3 {
+            color: var(--accent-color);
+            font-size: 1.1em;
+            margin: 0;
+        }
+
+        .close-settings {
+            background: none;
+            border: none;
+            font-size: 1.5em;
+            color: var(--text-secondary);
+            cursor: pointer;
+            padding: 0;
+            line-height: 1;
+        }
+
+        .close-settings:hover {
+            color: var(--text-primary);
+        }
+
+        .settings-option {
+            margin-bottom: 15px;
+        }
+
+        .settings-option label {
+            display: block;
+            color: var(--text-primary);
+            font-weight: 600;
+            margin-bottom: 8px;
+            font-size: 0.9em;
+        }
+
+        .toggle-switch {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 0;
+        }
+
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 24px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 24px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background-color: #4CAF50;
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
+
+        /* --- Панель настроек Битрикс24 --- */
+        .bitrix-settings-panel {
+            display: none;
+            position: fixed;
+            top: 80px;
+            right: 20px;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            box-shadow: 0 8px 24px var(--shadow-light);
+            padding: 20px;
+            width: 400px;
+            max-height: 80vh;
+            overflow-y: auto;
+            z-index: 1500;
+            animation: slideIn 0.3s ease;
+        }
+
+        .bitrix-settings-panel.show {
+            display: block;
+        }
+
+        .bitrix-input-group {
+            margin-bottom: 15px;
+        }
+
+        .bitrix-input-group label {
+            display: block;
+            color: var(--text-primary);
+            font-weight: 600;
+            margin-bottom: 6px;
+            font-size: 0.9em;
+        }
+
+        .bitrix-input-group input,
+        .bitrix-input-group textarea,
+        .bitrix-input-group select {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 0.9em;
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            transition: all 0.2s;
+        }
+
+        .bitrix-input-group input:focus,
+        .bitrix-input-group textarea:focus,
+        .bitrix-input-group select:focus {
+            outline: none;
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 3px rgba(63, 81, 181, 0.1);
+        }
+
+        .bitrix-input-group textarea {
+            resize: vertical;
+            min-height: 80px;
+            font-family: inherit;
+        }
+
+        .bitrix-input-group small {
+            display: block;
+            color: var(--text-secondary);
+            font-size: 0.8em;
+            margin-top: 4px;
+        }
+
+        .bitrix-connection-status {
+            padding: 10px 15px;
+            border-radius: 6px;
+            margin-bottom: 15px;
+            font-size: 0.9em;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .bitrix-connection-status.connected {
+            background: #e8f5e9;
+            color: #2e7d32;
+            border: 1px solid #4caf50;
+        }
+
+        .bitrix-connection-status.disconnected {
+            background: #ffebee;
+            color: #c62828;
+            border: 1px solid #f44336;
+        }
+
+        [data-theme="dark"] .bitrix-connection-status.connected {
+            background: #1b5e20;
+            color: #a5d6a7;
+        }
+
+        [data-theme="dark"] .bitrix-connection-status.disconnected {
+            background: #b71c1c;
+            color: #ef9a9a;
+        }
+
+        .bitrix-test-btn {
+            width: 100%;
+            padding: 10px;
+            background: #2196f3;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            margin-top: 10px;
+            transition: all 0.2s;
+        }
+
+        .bitrix-test-btn:hover {
+            background: #1976d2;
+            transform: translateY(-1px);
+        }
+
+        .bitrix-test-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .bitrix-save-btn {
+            width: 100%;
+            padding: 12px;
+            background: var(--accent-color);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            margin-top: 15px;
+            font-size: 1em;
+            transition: all 0.2s;
+        }
+
+        .bitrix-save-btn:hover {
+            opacity: 0.9;
+            transform: translateY(-1px);
+        }
+
+        .holiday-filter-list {
+            max-height: 200px;
+            overflow-y: auto;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 10px;
+            background: var(--bg-controls);
+        }
+
+        .holiday-filter-item {
+            display: flex;
+            align-items: center;
+            padding: 6px 0;
+            gap: 8px;
+        }
+
+        .holiday-filter-item input[type="checkbox"] {
+            width: auto;
+            cursor: pointer;
+        }
+
+        .holiday-filter-item label {
+            flex: 1;
+            cursor: pointer;
+            font-weight: 400 !important;
+            margin: 0 !important;
+            font-size: 0.85em !important;
+        }
+
+        .created-tasks-log {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .created-tasks-log h4 {
+            color: var(--text-primary);
+            font-size: 0.9em;
+            margin-bottom: 10px;
+        }
+
+        .task-log-item {
+            padding: 8px 10px;
+            background: var(--bg-controls);
+            border-radius: 6px;
+            margin-bottom: 8px;
+            font-size: 0.85em;
+        }
+
+        .task-log-name {
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 3px;
+        }
+
+        .task-log-date {
+            color: var(--text-secondary);
+            font-size: 0.9em;
+        }
+
+        .task-log-link {
+            color: #2196f3;
+            text-decoration: none;
+            font-size: 0.9em;
+        }
+
+        .task-log-link:hover {
+            text-decoration: underline;
+        }
+
+        /* --- Стили для списка пользователей --- */
+        .user-list-container {
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 10px;
+            background: var(--bg-controls);
+            margin-top: 10px;
+        }
+
+        .user-add-form {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 10px;
+        }
+
+        .user-add-input {
+            flex: 1;
+            padding: 8px 10px;
+            border: 2px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 0.9em;
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+        }
+
+        .user-add-input:focus {
+            outline: none;
+            border-color: var(--accent-color);
+        }
+
+        .user-add-btn {
+            padding: 8px 16px;
+            background: var(--accent-color);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.9em;
+            transition: all 0.2s;
+        }
+
+        .user-add-btn:hover {
+            opacity: 0.9;
+        }
+
+        .user-list {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .user-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 8px 10px;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            transition: all 0.2s;
+        }
+
+        .user-item:hover {
+            border-color: var(--accent-color);
+        }
+
+        .user-item-info {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex: 1;
+        }
+
+        .user-role-badge {
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 0.75em;
+            font-weight: 600;
+        }
+
+        .user-role-badge.responsible {
+            background: #e3f2fd;
+            color: #1565c0;
+        }
+
+        .user-role-badge.accomplice {
+            background: #f3e5f5;
+            color: #7b1fa2;
+        }
+
+        .user-role-badge.auditor {
+            background: #fff3e0;
+            color: #ef6c00;
+        }
+
+        [data-theme="dark"] .user-role-badge.responsible {
+            background: #1a237e;
+            color: #90caf9;
+        }
+
+        [data-theme="dark"] .user-role-badge.accomplice {
+            background: #4a148c;
+            color: #ce93d8;
+        }
+
+        [data-theme="dark"] .user-role-badge.auditor {
+            background: #e65100;
+            color: #ffb74d;
+        }
+
+        .user-id-text {
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .user-name-text {
+            color: var(--text-secondary);
+            font-size: 0.9em;
+        }
+
+        .user-item-actions {
+            display: flex;
+            gap: 6px;
+        }
+
+        .user-action-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.85em;
+            transition: all 0.2s;
+            color: var(--text-secondary);
+        }
+
+        .user-action-btn:hover {
+            background: var(--bg-controls);
+            color: var(--text-primary);
+        }
+
+        .user-remove-btn {
+            color: #d32f2f;
+        }
+
+        .user-remove-btn:hover {
+            background: #ffebee;
+            color: #c62828;
+        }
+
+        [data-theme="dark"] .user-remove-btn:hover {
+            background: #b71c1c;
+            color: #ef9a9a;
+        }
+
+        .task-mode-selector {
+            display: flex;
+            gap: 8px;
+            margin-top: 10px;
+        }
+
+        .task-mode-option {
+            flex: 1;
+            padding: 10px;
+            border: 2px solid var(--border-color);
+            border-radius: 6px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            background: var(--bg-secondary);
+        }
+
+        .task-mode-option:hover {
+            border-color: var(--accent-color);
+        }
+
+        .task-mode-option.selected {
+            border-color: var(--accent-color);
+            background: var(--accent-color);
+            color: white;
+        }
+
+        .task-mode-option .mode-icon {
+            font-size: 1.5em;
+            margin-bottom: 4px;
+        }
+
+        .task-mode-option .mode-title {
+            font-weight: 600;
+            font-size: 0.9em;
+            margin-bottom: 2px;
+        }
+
+        .task-mode-option .mode-desc {
+            font-size: 0.75em;
+            opacity: 0.8;
+        }
+
         /* --- Модальное окно (стили заголовков модального окна) --- */
         .modal {
-            display: none; 
+            display: none;
             position: fixed;
             z-index: 2000;
             left: 0;
@@ -394,15 +1282,16 @@
         }
 
         .modal-content {
-            background-color: #fefefe;
-            margin: 5% auto; 
+            background-color: var(--bg-secondary);
+            margin: 5% auto;
             padding: 25px;
             border-radius: 10px;
             width: 80%;
             max-width: 500px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            box-shadow: 0 5px 15px var(--shadow-light);
             animation-name: animatetop;
             animation-duration: 0.4s;
+            border: 1px solid var(--border-color);
         }
         
         @keyframes animatetop {
@@ -411,7 +1300,7 @@
         }
 
         .close-btn {
-            color: #aaa;
+            color: var(--text-secondary);
             float: right;
             font-size: 28px;
             font-weight: bold;
@@ -420,35 +1309,35 @@
 
         .close-btn:hover,
         .close-btn:focus {
-            color: #333;
+            color: var(--text-primary);
             text-decoration: none;
             cursor: pointer;
         }
-        
+
         .modal-content h4 {
-            color: #3f51b5;
-            border-bottom: 2px solid #e0e6ed;
+            color: var(--accent-color);
+            border-bottom: 2px solid var(--border-color);
             padding-bottom: 10px;
             margin-bottom: 15px;
             font-size: 1.3em;
         }
-        
+
         .state-list-modal {
             max-height: 250px;
             overflow-y: auto;
         }
-        
+
         .state-list-modal p {
             font-size: 0.95em;
             padding: 5px 0;
-            border-bottom: 1px dotted #e0e6ed;
-            color: #546e7a;
+            border-bottom: 1px dotted var(--border-color);
+            color: var(--text-secondary);
         }
-        
+
         .state-list-modal p:last-child {
             border-bottom: none;
         }
-        
+
         /* Стили заголовков внутри модального окна */
         .modal-content h5 {
             margin-top: 15px;
@@ -468,21 +1357,274 @@
             .control-group {
                 flex: 1 1 100%;
             }
+            .stats-panel {
+                flex-direction: column;
+                gap: 15px;
+            }
+            .stat-item {
+                width: 100%;
+            }
+            .view-controls {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .view-modes {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            .search-container {
+                max-width: 100%;
+            }
+            .filter-chips {
+                justify-content: center;
+            }
+            .header-controls {
+                position: static;
+                justify-content: center;
+                margin-bottom: 15px;
+            }
+            .bitrix-settings-panel {
+                right: 10px;
+                left: 10px;
+                width: auto;
+                max-width: 350px;
+                margin: 0 auto;
+            }
+        }
+
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 1.5em;
+            }
+            .subtitle {
+                font-size: 0.9em;
+            }
+            .source-info {
+                font-size: 0.75em;
+            }
+            .stat-number {
+                font-size: 2em;
+            }
+            .stat-label {
+                font-size: 0.8em;
+            }
+            .view-mode-btn {
+                padding: 6px 12px;
+                font-size: 0.85em;
+            }
+            .holiday-list-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+            .holiday-date-info {
+                flex-direction: column;
+                gap: 10px;
+                width: 100%;
+            }
+            .holiday-table table {
+                font-size: 0.85em;
+            }
+            .holiday-table th,
+            .holiday-table td {
+                padding: 8px 10px;
+            }
         }
     </style>
 </head>
 <body>
     <div class="container">
         <header>
-            <h1>Календарь праздников США и Канады 2026</h1>
-            <div class="subtitle">Федеральные, региональные и провинциальные нерабочие дни</div>
-            <div class="source-info">США: U.S. OPM; Онтарио: Ontario Ministry of Labour</div>
+            <div class="header-controls">
+                <button class="theme-toggle" onclick="toggleTheme()" id="themeToggle">
+                    <span id="themeIcon">🌙</span>
+                    <span id="themeText">Темная</span>
+                </button>
+                <button class="lang-toggle" onclick="toggleLanguage()" id="langToggle">
+                    <span>🌐</span>
+                    <span id="langText">EN</span>
+                </button>
+                <button class="bitrix-toggle" onclick="toggleBitrixPanel()" id="bitrixToggle">
+                    <span id="bitrixIcon">📋</span>
+                    <span id="bitrixText">Битрикс24</span>
+                </button>
+            </div>
+            <h1 id="mainTitle">Календарь праздников США и Канады 2026</h1>
+            <div class="subtitle" id="subtitle">Федеральные, региональные и провинциальные нерабочие дни</div>
+            <div class="source-info" id="sourceInfo">США: U.S. OPM; Онтарио: Ontario Ministry of Labour</div>
         </header>
+
+<!-- Панель настроек Битрикс24 -->
+        <div class="bitrix-settings-panel" id="bitrixPanel">
+            <div class="settings-header">
+                <h3 id="bitrixSettingsTitle">Интеграция с Битрикс24</h3>
+                <button class="close-settings" onclick="closeBitrixPanel()">&times;</button>
+            </div>
+
+            <div class="bitrix-connection-status disconnected" id="bitrixStatus">
+                <span>⚠️</span>
+                <span id="bitrixStatusText">Не подключено</span>
+            </div>
+
+            <div class="bitrix-input-group">
+                <label for="bitrixWebhook" id="bitrixWebhookLabel">Webhook URL:</label>
+                <input type="text" id="bitrixWebhook" placeholder="https://your-portal.bitrix24.ru/rest/...">
+                <small id="bitrixWebhookHelp">Получите webhook в: Приложения → Входящий вебхук</small>
+            </div>
+
+            <div class="bitrix-input-group">
+                <label for="bitrixTaskTitle" id="bitrixTaskTitleLabel">Шаблон названия задачи:</label>
+                <input type="text" id="bitrixTaskTitle" value="Подготовка к {holiday} - проверка работы препцентров">
+                <small id="bitrixTaskTitleHelp">{holiday} - название праздника, {date} - дата</small>
+            </div>
+
+            <div class="bitrix-input-group">
+                <label for="bitrixTaskDescription" id="bitrixTaskDescLabel">Описание задачи:</label>
+                <textarea id="bitrixTaskDescription" placeholder="Проверить работу всех преп-центров в преддверии праздника {holiday} ({date}).&#10;&#10;Необходимо:&#10;- Связаться с руководителями&#10;- Уточнить график работы&#10;- Подготовить информацию для клиентов"></textarea>
+            </div>
+
+            <div class="bitrix-input-group">
+                <label id="bitrixUsersLabel">Пользователи задачи:</label>
+                <small id="bitrixUsersHelp">Добавьте ID пользователей Битрикс24. Первый будет ответственным.</small>
+
+                <div class="user-list-container">
+                    <div class="user-add-form">
+                        <input type="number" id="userIdInput" class="user-add-input" placeholder="ID пользователя" min="1">
+                        <button class="user-add-btn" onclick="addBitrixUser()" id="addUserBtn">+ Добавить</button>
+                    </div>
+                    <div class="user-list" id="bitrixUserList"></div>
+                </div>
+            </div>
+
+            <div class="bitrix-input-group">
+                <label id="bitrixTaskModeLabel">Режим создания задач:</label>
+                <div class="task-mode-selector">
+                    <div class="task-mode-option selected" data-mode="single" onclick="selectTaskMode('single')">
+                        <div class="mode-icon">📋</div>
+                        <div class="mode-title" id="modeSingleTitle">Одна задача</div>
+                        <div class="mode-desc" id="modeSingleDesc">С соисполнителями</div>
+                    </div>
+                    <div class="task-mode-option" data-mode="multiple" onclick="selectTaskMode('multiple')">
+                        <div class="mode-icon">📋📋</div>
+                        <div class="mode-title" id="modeMultipleTitle">Отдельные</div>
+                        <div class="mode-desc" id="modeMultipleDesc">Для каждого</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bitrix-input-group">
+                <label for="bitrixDaysBefore" id="bitrixDaysBeforeLabel">Создавать задачу за (дней):</label>
+                <select id="bitrixDaysBefore">
+                    <option value="3">3 дня</option>
+                    <option value="7" selected>7 дней</option>
+                    <option value="10">10 дней</option>
+                    <option value="14">14 дней</option>
+                    <option value="21">21 день</option>
+                </select>
+            </div>
+
+            <div class="bitrix-input-group">
+                <div class="toggle-switch">
+                    <label for="bitrixAutoCreate" id="bitrixAutoLabel">Автоматическое создание задач</label>
+                    <label class="switch">
+                        <input type="checkbox" id="bitrixAutoCreate">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="bitrix-input-group">
+                <label id="bitrixFilterLabel">Создавать задачи для праздников:</label>
+                <div class="holiday-filter-list" id="bitrixHolidayFilter">
+                    <div class="holiday-filter-item">
+                        <input type="checkbox" id="bitrix_federal" value="federal" checked>
+                        <label for="bitrix_federal">Федеральные праздники США</label>
+                    </div>
+                    <div class="holiday-filter-item">
+                        <input type="checkbox" id="bitrix_state" value="state">
+                        <label for="bitrix_state">Региональные праздники США</label>
+                    </div>
+                    <div class="holiday-filter-item">
+                        <input type="checkbox" id="bitrix_ontario" value="ontario" checked>
+                        <label for="bitrix_ontario">Праздники Онтарио</label>
+                    </div>
+                </div>
+            </div>
+
+            <button class="bitrix-test-btn" onclick="testBitrixConnection()" id="bitrixTestBtn">
+                Проверить подключение
+            </button>
+
+            <button class="bitrix-save-btn" onclick="saveBitrixSettings()" id="bitrixSaveBtn">
+                Сохранить настройки
+            </button>
+
+            <div class="created-tasks-log">
+                <h4 id="bitrixLogTitle">Созданные задачи:</h4>
+                <div id="bitrixTaskLog"></div>
+            </div>
+        </div>
+
+        <div class="stats-panel" id="statsPanel">
+            <div class="stat-item">
+                <div class="stat-number" id="totalHolidays">0</div>
+                <div class="stat-label" id="statLabel1">Всего праздников</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number" id="federalCount">0</div>
+                <div class="stat-label" id="statLabel2">Федеральных (US)</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number" id="regionalCount">0</div>
+                <div class="stat-label" id="statLabel3">Региональных (US)</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number" id="ontarioCount">0</div>
+                <div class="stat-label" id="statLabel4">Онтарио (CA)</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number" id="longWeekends">0</div>
+                <div class="stat-label" id="statLabel5">Длинных уикендов</div>
+            </div>
+        </div>
+
+        <div class="view-controls">
+            <div class="view-modes">
+                <span class="view-mode-label" id="viewModeLabel">Режим:</span>
+                <button class="view-mode-btn active" onclick="setViewMode('grid')" id="viewGrid">
+                    <span>📅</span> <span id="viewGridText">Календарь</span>
+                </button>
+                <button class="view-mode-btn" onclick="setViewMode('list')" id="viewList">
+                    <span>📋</span> <span id="viewListText">Список</span>
+                </button>
+                <button class="view-mode-btn" onclick="setViewMode('table')" id="viewTable">
+                    <span>📊</span> <span id="viewTableText">Таблица</span>
+                </button>
+            </div>
+            <div class="search-container">
+                <input type="text" id="holidaySearch" class="search-input" placeholder="Поиск праздников..." oninput="filterHolidays()">
+                <span class="search-icon">🔍</span>
+            </div>
+            <div class="filter-chips">
+                <div class="filter-chip active" onclick="toggleFilter('all')" id="filterAll" data-filter="all">
+                    <span id="filterAllText">Все</span>
+                </div>
+                <div class="filter-chip" onclick="toggleFilter('federal')" id="filterFederal" data-filter="federal">
+                    <span id="filterFederalText">Федеральные</span>
+                </div>
+                <div class="filter-chip" onclick="toggleFilter('state')" id="filterState" data-filter="state">
+                    <span id="filterStateText">Региональные</span>
+                </div>
+                <div class="filter-chip" onclick="toggleFilter('ontario')" id="filterOntario" data-filter="ontario">
+                    <span id="filterOntarioText">Онтарио</span>
+                </div>
+            </div>
+        </div>
 
         <div class="controls">
             <div class="control-group">
                 <div class="control-section">
-                    <h3>Выберите штаты США:</h3>
+                    <h3 id="selectStatesTitle">Выберите штаты США:</h3>
                     <div class="dropdown-container">
                         <button class="dropdown-toggle" id="dropdownToggle" onclick="toggleDropdown()">
                             Выбраны все штаты
@@ -494,17 +1636,17 @@
                         </div>
                     </div>
                     <div class="button-group">
-                        <button class="btn-primary" onclick="selectAll('us')">Выбрать все США</button>
-                        <button class="btn-secondary" onclick="deselectAll('us')">Снять все США</button>
+                        <button class="btn-primary" onclick="selectAll('us')" id="btnSelectAll">Выбрать все США</button>
+                        <button class="btn-secondary" onclick="deselectAll('us')" id="btnDeselectAll">Снять все США</button>
                     </div>
                 </div>
             </div>
-            
+
             <div class="control-group">
                 <div class="control-section">
-                    <h3>Выберите провинции Канады:</h3>
+                    <h3 id="selectProvincesTitle">Выберите провинции Канады:</h3>
                     <div class="ontario-control">
-                        <label for="ontario_ON">
+                        <label for="ontario_ON" id="ontarioLabel">
                             <input type="checkbox" id="ontario_ON" value="ON" onchange="updateCalendar()" checked>
                             Онтарио, Канада (ON)
                         </label>
@@ -512,30 +1654,38 @@
                 </div>
 
                 <div class="button-group">
-                    <button class="btn-primary" onclick="updateCalendar()">Обновить календарь</button>
+                    <button class="btn-primary" onclick="updateCalendar()" id="btnUpdateCalendar">Обновить календарь</button>
                 </div>
             </div>
         </div>
 
         <div class="calendar-view">
-            <div class="calendar-grid-container" id="calendarContainer"></div>
-            
+            <div class="calendar-grid-container active" id="calendarContainer"></div>
+
+            <div class="list-view" id="listContainer">
+                <div class="holiday-list" id="holidayList"></div>
+            </div>
+
+            <div class="table-view" id="tableContainer">
+                <div class="holiday-table" id="holidayTable"></div>
+            </div>
+
             <div class="legend">
                 <div class="legend-item">
                     <div class="legend-box" style="background: #bbdefb; border: 1px solid #1a237e;"></div>
-                    <span>Федеральный праздник США</span>
+                    <span id="legendFederal">Федеральный праздник США</span>
                 </div>
                 <div class="legend-item">
                     <div class="legend-box" style="background: #ffe0b2; border: 1px solid #e65100;"></div>
-                    <span>Региональный праздник США</span>
+                    <span id="legendState">Региональный праздник США</span>
                 </div>
                 <div class="legend-item">
                     <div class="legend-box" style="background: #e1bee7; border: 1px solid #4a148c;"></div>
-                    <span>Праздник Онтарио (Канада)</span>
+                    <span id="legendOntario">Праздник Онтарио (Канада)</span>
                 </div>
                 <div class="legend-item">
                     <div class="legend-box" style="background: #f8bbd0; border: 1px solid #f48fb1;"></div>
-                    <span>Выходной день</span>
+                    <span id="legendWeekend">Выходной день</span>
                 </div>
             </div>
         </div>
@@ -551,6 +1701,202 @@
     </div>
 
     <script>
+        // --- Глобальные переменные ---
+        let currentLanguage = localStorage.getItem('language') || 'ru';
+        let currentTheme = localStorage.getItem('theme') || 'light';
+        let currentViewMode = localStorage.getItem('viewMode') || 'grid';
+        let activeFilter = 'all';
+
+        // Bitrix24 variables
+        let bitrixWebhookUrl = localStorage.getItem('bitrixWebhookUrl') || '';
+        let bitrixTaskTitle = localStorage.getItem('bitrixTaskTitle') || 'Подготовка к {holiday} - проверка работы препцентров';
+        let bitrixTaskDescription = localStorage.getItem('bitrixTaskDescription') || '';
+        let bitrixUsers = JSON.parse(localStorage.getItem('bitrixUsers') || '[{"id": 1, "name": "", "role": "responsible"}]');
+        let bitrixTaskMode = localStorage.getItem('bitrixTaskMode') || 'single'; // 'single' or 'multiple'
+        let bitrixDaysBefore = parseInt(localStorage.getItem('bitrixDaysBefore')) || 7;
+        let bitrixAutoCreate = localStorage.getItem('bitrixAutoCreate') === 'true';
+        let bitrixHolidayTypes = JSON.parse(localStorage.getItem('bitrixHolidayTypes') || '["federal","ontario"]');
+        let bitrixCreatedTasks = JSON.parse(localStorage.getItem('bitrixCreatedTasks') || '[]');
+        let bitrixConnected = false;
+
+        // --- Объект переводов ---
+        const translations = {
+            ru: {
+                mainTitle: 'Календарь праздников США и Канады 2026',
+                subtitle: 'Федеральные, региональные и провинциальные нерабочие дни',
+                sourceInfo: 'США: U.S. OPM; Онтарио: Ontario Ministry of Labour',
+                themeLight: 'Светлая',
+                themeDark: 'Темная',
+                statLabel1: 'Всего праздников',
+                statLabel2: 'Федеральных (US)',
+                statLabel3: 'Региональных (US)',
+                statLabel4: 'Онтарио (CA)',
+                statLabel5: 'Длинных уикендов',
+                viewModeLabel: 'Режим:',
+                viewGridText: 'Календарь',
+                viewListText: 'Список',
+                viewTableText: 'Таблица',
+                searchPlaceholder: 'Поиск праздников...',
+                filterAllText: 'Все',
+                filterFederalText: 'Федеральные',
+                filterStateText: 'Региональные',
+                filterOntarioText: 'Онтарио',
+                selectStates: 'Выберите штаты США:',
+                selectProvinces: 'Выберите провинции Канады:',
+                allStatesSelected: 'Выбраны все штаты',
+                statesSelected: 'Выбрано штатов',
+                selectStatesPlaceholder: 'Выберите штаты...',
+                selectAllUS: 'Выбрать все США',
+                deselectAllUS: 'Снять все США',
+                updateCalendar: 'Обновить календарь',
+                ontarioLabel: 'Онтарио, Канада (ON)',
+                legendFederal: 'Федеральный праздник США',
+                legendState: 'Региональный праздник США',
+                legendOntario: 'Праздник Онтарио (Канада)',
+                legendWeekend: 'Выходной день',
+                monthNames: ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'],
+                dayNames: ['Вс', 'Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб'],
+                tableHeaders: ['Дата', 'День недели', 'Название', 'Тип', 'Регион'],
+                holidayType: {federal: 'Федеральный (US)', state: 'Региональный (US)', ontario: 'Онтарио (CA)'},
+                notificationText: 'Уведомления',
+                settingsTitle: 'Настройки уведомлений',
+                enableLabel: 'Включить уведомления',
+                daysBeforeLabel: 'Предупреждать за:',
+                daysText3: 'дня',
+                daysText7: 'дней',
+                daysText14: 'дней',
+                upcomingTitle: 'Предстоящие праздники:',
+                testNotificationBtn: 'Проверить уведомление',
+                noUpcoming: 'Нет предстоящих праздников',
+                notificationTitle: 'Приближается праздник!',
+                notificationBody: (name, days) => `${name} через ${days} ${days === 1 ? 'день' : days < 5 ? 'дня' : 'дней'}!`,
+                testNotificationTitle: 'Тестовое уведомление',
+                testNotificationBody: 'Уведомления работают отлично!',
+                permissionDenied: 'Разрешение на уведомления отклонено',
+                inDays: (days) => `через ${days} ${days === 1 ? 'день' : days < 5 ? 'дня' : 'дней'}`,
+                bitrixText: 'Битрикс24',
+                bitrixSettingsTitle: 'Интеграция с Битрикс24',
+                bitrixStatusConnected: '✓ Подключено',
+                bitrixStatusDisconnected: '⚠️ Не подключено',
+                bitrixWebhookLabel: 'Webhook URL:',
+                bitrixWebhookHelp: 'Получите webhook в: Приложения → Входящий вебхук',
+                bitrixTaskTitleLabel: 'Шаблон названия задачи:',
+                bitrixTaskTitleHelp: '{holiday} - название праздника, {date} - дата',
+                bitrixTaskDescLabel: 'Описание задачи:',
+                bitrixUsersLabel: 'Пользователи задачи:',
+                bitrixUsersHelp: 'Добавьте ID пользователей Битрикс24. Первый будет ответственным.',
+                addUserBtn: '+ Добавить',
+                bitrixTaskModeLabel: 'Режим создания задач:',
+                modeSingleTitle: 'Одна задача',
+                modeSingleDesc: 'С соисполнителями',
+                modeMultipleTitle: 'Отдельные',
+                modeMultipleDesc: 'Для каждого',
+                userPlaceholder: 'ID пользователя',
+                roleResponsible: 'Ответственный',
+                roleAccomplice: 'Соисполнитель',
+                roleAuditor: 'Наблюдатель',
+                bitrixDaysBeforeLabel: 'Создавать задачу за (дней):',
+                bitrixAutoLabel: 'Автоматическое создание задач',
+                bitrixFilterLabel: 'Создавать задачи для праздников:',
+                bitrixTestBtn: 'Проверить подключение',
+                bitrixSaveBtn: 'Сохранить настройки',
+                bitrixLogTitle: 'Созданные задачи:',
+                bitrixNoTasks: 'Задачи еще не созданы',
+                bitrixConnectionSuccess: 'Подключение успешно!',
+                bitrixConnectionFailed: 'Ошибка подключения',
+                bitrixSettingsSaved: 'Настройки сохранены',
+                bitrixTaskCreated: 'Задача создана',
+                bitrixTaskError: 'Ошибка создания задачи'
+            },
+            en: {
+                mainTitle: 'US & Canada Holiday Calendar 2026',
+                subtitle: 'Federal, State and Provincial Holidays',
+                sourceInfo: 'USA: U.S. OPM; Ontario: Ontario Ministry of Labour',
+                themeLight: 'Light',
+                themeDark: 'Dark',
+                statLabel1: 'Total Holidays',
+                statLabel2: 'Federal (US)',
+                statLabel3: 'Regional (US)',
+                statLabel4: 'Ontario (CA)',
+                statLabel5: 'Long Weekends',
+                viewModeLabel: 'View:',
+                viewGridText: 'Calendar',
+                viewListText: 'List',
+                viewTableText: 'Table',
+                searchPlaceholder: 'Search holidays...',
+                filterAllText: 'All',
+                filterFederalText: 'Federal',
+                filterStateText: 'Regional',
+                filterOntarioText: 'Ontario',
+                selectStates: 'Select US States:',
+                selectProvinces: 'Select Canadian Provinces:',
+                allStatesSelected: 'All states selected',
+                statesSelected: 'States selected',
+                selectStatesPlaceholder: 'Select states...',
+                selectAllUS: 'Select all US',
+                deselectAllUS: 'Deselect all US',
+                updateCalendar: 'Update Calendar',
+                ontarioLabel: 'Ontario, Canada (ON)',
+                legendFederal: 'US Federal Holiday',
+                legendState: 'US Regional Holiday',
+                legendOntario: 'Ontario Holiday (Canada)',
+                legendWeekend: 'Weekend',
+                monthNames: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+                dayNames: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
+                tableHeaders: ['Date', 'Day of Week', 'Name', 'Type', 'Region'],
+                holidayType: {federal: 'Federal (US)', state: 'Regional (US)', ontario: 'Ontario (CA)'},
+                notificationText: 'Notifications',
+                settingsTitle: 'Notification Settings',
+                enableLabel: 'Enable Notifications',
+                daysBeforeLabel: 'Notify before:',
+                daysText3: 'days',
+                daysText7: 'days',
+                daysText14: 'days',
+                upcomingTitle: 'Upcoming Holidays:',
+                testNotificationBtn: 'Test Notification',
+                noUpcoming: 'No upcoming holidays',
+                notificationTitle: 'Holiday Coming Up!',
+                notificationBody: (name, days) => `${name} in ${days} day${days === 1 ? '' : 's'}!`,
+                testNotificationTitle: 'Test Notification',
+                testNotificationBody: 'Notifications are working great!',
+                permissionDenied: 'Notification permission denied',
+                inDays: (days) => `in ${days} day${days === 1 ? '' : 's'}`,
+                bitrixText: 'Bitrix24',
+                bitrixSettingsTitle: 'Bitrix24 Integration',
+                bitrixStatusConnected: '✓ Connected',
+                bitrixStatusDisconnected: '⚠️ Not Connected',
+                bitrixWebhookLabel: 'Webhook URL:',
+                bitrixWebhookHelp: 'Get webhook at: Apps → Incoming Webhook',
+                bitrixTaskTitleLabel: 'Task title template:',
+                bitrixTaskTitleHelp: '{holiday} - holiday name, {date} - date',
+                bitrixTaskDescLabel: 'Task description:',
+                bitrixUsersLabel: 'Task users:',
+                bitrixUsersHelp: 'Add Bitrix24 user IDs. First will be responsible.',
+                addUserBtn: '+ Add',
+                bitrixTaskModeLabel: 'Task creation mode:',
+                modeSingleTitle: 'Single task',
+                modeSingleDesc: 'With accomplices',
+                modeMultipleTitle: 'Separate',
+                modeMultipleDesc: 'For each user',
+                userPlaceholder: 'User ID',
+                roleResponsible: 'Responsible',
+                roleAccomplice: 'Accomplice',
+                roleAuditor: 'Auditor',
+                bitrixDaysBeforeLabel: 'Create task (days before):',
+                bitrixAutoLabel: 'Automatic task creation',
+                bitrixFilterLabel: 'Create tasks for holidays:',
+                bitrixTestBtn: 'Test Connection',
+                bitrixSaveBtn: 'Save Settings',
+                bitrixLogTitle: 'Created Tasks:',
+                bitrixNoTasks: 'No tasks created yet',
+                bitrixConnectionSuccess: 'Connection successful!',
+                bitrixConnectionFailed: 'Connection error',
+                bitrixSettingsSaved: 'Settings saved',
+                bitrixTaskCreated: 'Task created',
+                bitrixTaskError: 'Task creation error'
+            }
+        };
+
         const states = {
             'WA': 'Washington', 'CA': 'California', 'NV': 'Nevada', 'TX': 'Texas',
             'IL': 'Illinois', 'IN': 'Indiana', 'PA': 'Pennsylvania', 'NY': 'New York',
@@ -579,7 +1925,7 @@
                 {date: '2026-11-27', name: 'Day After Thanksgiving'}
             ],
             'WA': [
-                {date: '2026-11-27', name: 'Day After Thanksgiving'}
+                {date: '2026-11-27', name: 'Native American Heritage Day'}
             ],
             'CA': [
                 {date: '2026-03-31', name: 'Cesar Chavez Day'},
@@ -606,7 +1952,6 @@
                 {date: '2026-11-03', name: 'Election Day'}
             ],
             'FL': [
-                {date: '2026-04-03', name: 'Good Friday'}
             ],
             'OR': [
                 {date: '2026-11-27', name: 'Day After Thanksgiving'}
@@ -619,7 +1964,7 @@
             ],
             'SC': [
                 {date: '2026-04-03', name: 'Good Friday'},
-                {date: '2026-05-10', name: 'Confederate Memorial Day'},
+                {date: '2026-05-11', name: 'Confederate Memorial Day'},
                 {date: '2026-11-27', name: 'Day After Thanksgiving'}
             ]
         };
@@ -632,18 +1977,759 @@
             {date: '2026-07-01', name: 'Canada Day'},
             {date: '2026-08-03', name: 'Civic Holiday'},
             {date: '2026-09-07', name: 'Labour Day'},
-            {date: '2026-09-30', name: 'National Day for Truth and Reconciliation'},
             {date: '2026-10-12', name: 'Thanksgiving Day'},
-            {date: '2026-11-11', name: 'Remembrance Day (often observed)'},
             {date: '2026-12-25', name: 'Christmas Day'},
             {date: '2026-12-26', name: 'Boxing Day', observed: '2026-12-28'}
         ];
 
-        const monthNames = ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь',
+        let monthNames = ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь',
                            'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'];
-        const dayNames = ['Вс', 'Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб'];
-        
-        let allHolidaysData = []; 
+        let dayNames = ['Вс', 'Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб'];
+
+        let allHolidaysData = [];
+
+        // --- Функции переключения темы и языка ---
+
+        function toggleTheme() {
+            currentTheme = currentTheme === 'light' ? 'dark' : 'light';
+            document.documentElement.setAttribute('data-theme', currentTheme);
+            localStorage.setItem('theme', currentTheme);
+            updateThemeButton();
+        }
+
+        function updateThemeButton() {
+            const icon = document.getElementById('themeIcon');
+            const text = document.getElementById('themeText');
+            const t = translations[currentLanguage];
+            if (currentTheme === 'dark') {
+                icon.textContent = '☀️';
+                text.textContent = t.themeLight;
+            } else {
+                icon.textContent = '🌙';
+                text.textContent = t.themeDark;
+            }
+        }
+
+        function toggleLanguage() {
+            currentLanguage = currentLanguage === 'ru' ? 'en' : 'ru';
+            localStorage.setItem('language', currentLanguage);
+            updateLanguage();
+            updateCalendar();
+        }
+
+        function updateLanguage() {
+            const t = translations[currentLanguage];
+            document.getElementById('langText').textContent = currentLanguage === 'ru' ? 'EN' : 'RU';
+            document.getElementById('mainTitle').textContent = t.mainTitle;
+            document.getElementById('subtitle').textContent = t.subtitle;
+            document.getElementById('sourceInfo').textContent = t.sourceInfo;
+
+            // Stats labels
+            for (let i = 1; i <= 5; i++) {
+                document.getElementById(`statLabel${i}`).textContent = t[`statLabel${i}`];
+            }
+
+            // View mode labels
+            document.getElementById('viewModeLabel').textContent = t.viewModeLabel;
+            document.getElementById('viewGridText').textContent = t.viewGridText;
+            document.getElementById('viewListText').textContent = t.viewListText;
+            document.getElementById('viewTableText').textContent = t.viewTableText;
+
+            // Search placeholder
+            document.getElementById('holidaySearch').placeholder = t.searchPlaceholder;
+
+            // Filter chips
+            document.getElementById('filterAllText').textContent = t.filterAllText;
+            document.getElementById('filterFederalText').textContent = t.filterFederalText;
+            document.getElementById('filterStateText').textContent = t.filterStateText;
+            document.getElementById('filterOntarioText').textContent = t.filterOntarioText;
+
+            // Legend
+            document.getElementById('legendFederal').textContent = t.legendFederal;
+            document.getElementById('legendState').textContent = t.legendState;
+            document.getElementById('legendOntario').textContent = t.legendOntario;
+            document.getElementById('legendWeekend').textContent = t.legendWeekend;
+
+            // Controls
+            document.getElementById('selectStatesTitle').textContent = t.selectStates;
+            document.getElementById('selectProvincesTitle').textContent = t.selectProvinces;
+            document.getElementById('btnSelectAll').textContent = t.selectAllUS;
+            document.getElementById('btnDeselectAll').textContent = t.deselectAllUS;
+            document.getElementById('btnUpdateCalendar').textContent = t.updateCalendar;
+
+            // Ontario label (only text part)
+            const ontarioCheckbox = document.getElementById('ontario_ON');
+            const ontarioLabel = document.getElementById('ontarioLabel');
+            ontarioLabel.innerHTML = `<input type="checkbox" id="ontario_ON" value="ON" onchange="updateCalendar()" ${ontarioCheckbox.checked ? 'checked' : ''}> ${t.ontarioLabel}`;
+
+            // Update state search placeholder
+            const stateSearchInput = document.getElementById('stateSearch');
+            if (stateSearchInput) {
+                stateSearchInput.placeholder = currentLanguage === 'ru' ? 'Поиск штата...' : 'Search state...';
+            }
+
+            // Month and day names
+            monthNames = t.monthNames;
+            dayNames = t.dayNames;
+
+            // Update dropdown text
+            const selectedCount = getSelectedStates().length;
+            updateDropdownToggleText(selectedCount);
+
+            // Update Bitrix24 panel
+            updateBitrixPanelLanguage();
+
+            updateThemeButton();
+        }
+
+        // --- Функции Битрикс24 ---
+
+        function toggleBitrixPanel() {
+            const panel = document.getElementById('bitrixPanel');
+            const isShown = panel.classList.contains('show');
+
+            if (isShown) {
+                closeBitrixPanel();
+            } else {
+                panel.classList.add('show');
+                loadBitrixSettings();
+                updateBitrixTaskLog();
+            }
+        }
+
+        function closeBitrixPanel() {
+            document.getElementById('bitrixPanel').classList.remove('show');
+        }
+
+        function loadBitrixSettings() {
+            document.getElementById('bitrixWebhook').value = bitrixWebhookUrl;
+            document.getElementById('bitrixTaskTitle').value = bitrixTaskTitle;
+            document.getElementById('bitrixTaskDescription').value = bitrixTaskDescription;
+            document.getElementById('bitrixDaysBefore').value = bitrixDaysBefore;
+            document.getElementById('bitrixAutoCreate').checked = bitrixAutoCreate;
+
+            // Load users
+            renderBitrixUserList();
+
+            // Load task mode
+            document.querySelectorAll('.task-mode-option').forEach(opt => {
+                opt.classList.toggle('selected', opt.dataset.mode === bitrixTaskMode);
+            });
+
+            // Load holiday type filters
+            document.getElementById('bitrix_federal').checked = bitrixHolidayTypes.includes('federal');
+            document.getElementById('bitrix_state').checked = bitrixHolidayTypes.includes('state');
+            document.getElementById('bitrix_ontario').checked = bitrixHolidayTypes.includes('ontario');
+
+            updateBitrixConnectionStatus();
+        }
+
+        function addBitrixUser() {
+            const input = document.getElementById('userIdInput');
+            const userId = parseInt(input.value);
+
+            if (!userId || userId < 1) {
+                alert('Введите корректный ID пользователя');
+                return;
+            }
+
+            // Check if user already exists
+            if (bitrixUsers.some(u => u.id === userId)) {
+                alert('Этот пользователь уже добавлен');
+                return;
+            }
+
+            // Determine role
+            const role = bitrixUsers.length === 0 ? 'responsible' : 'accomplice';
+
+            bitrixUsers.push({
+                id: userId,
+                name: '',
+                role: role
+            });
+
+            input.value = '';
+            renderBitrixUserList();
+        }
+
+        function removeBitrixUser(userId) {
+            const index = bitrixUsers.findIndex(u => u.id === userId);
+            if (index === -1) return;
+
+            bitrixUsers.splice(index, 1);
+
+            // If removed responsible, make first user responsible
+            if (bitrixUsers.length > 0 && !bitrixUsers.some(u => u.role === 'responsible')) {
+                bitrixUsers[0].role = 'responsible';
+            }
+
+            renderBitrixUserList();
+        }
+
+        function changeUserRole(userId, newRole) {
+            const user = bitrixUsers.find(u => u.id === userId);
+            if (!user) return;
+
+            // If changing to responsible, demote current responsible
+            if (newRole === 'responsible') {
+                bitrixUsers.forEach(u => {
+                    if (u.role === 'responsible') u.role = 'accomplice';
+                });
+            }
+
+            user.role = newRole;
+            renderBitrixUserList();
+        }
+
+        function renderBitrixUserList() {
+            const container = document.getElementById('bitrixUserList');
+            const t = translations[currentLanguage];
+
+            if (bitrixUsers.length === 0) {
+                container.innerHTML = `<div style="text-align: center; padding: 15px; color: var(--text-secondary); font-size: 0.9em;">${t.noUpcoming || 'Пользователи не добавлены'}</div>`;
+                return;
+            }
+
+            let html = '';
+            bitrixUsers.forEach(user => {
+                const roleLabel = t[`role${user.role.charAt(0).toUpperCase() + user.role.slice(1)}`] || user.role;
+
+                html += `
+                    <div class="user-item">
+                        <div class="user-item-info">
+                            <span class="user-role-badge ${user.role}">${roleLabel}</span>
+                            <span class="user-id-text">ID: ${user.id}</span>
+                            ${user.name ? `<span class="user-name-text">${user.name}</span>` : ''}
+                        </div>
+                        <div class="user-item-actions">
+                            ${user.role !== 'responsible' ? `<button class="user-action-btn" onclick="changeUserRole(${user.id}, 'responsible')" title="Сделать ответственным">⭐</button>` : ''}
+                            ${bitrixUsers.length > 1 ? `<button class="user-action-btn user-remove-btn" onclick="removeBitrixUser(${user.id})" title="Удалить">✕</button>` : ''}
+                        </div>
+                    </div>
+                `;
+            });
+
+            container.innerHTML = html;
+        }
+
+        function selectTaskMode(mode) {
+            bitrixTaskMode = mode;
+            document.querySelectorAll('.task-mode-option').forEach(opt => {
+                opt.classList.toggle('selected', opt.dataset.mode === mode);
+            });
+        }
+
+        function saveBitrixSettings() {
+            bitrixWebhookUrl = document.getElementById('bitrixWebhook').value.trim();
+            bitrixTaskTitle = document.getElementById('bitrixTaskTitle').value;
+            bitrixTaskDescription = document.getElementById('bitrixTaskDescription').value;
+            bitrixDaysBefore = parseInt(document.getElementById('bitrixDaysBefore').value);
+            bitrixAutoCreate = document.getElementById('bitrixAutoCreate').checked;
+
+            // Validate users
+            if (bitrixUsers.length === 0) {
+                alert('Добавьте хотя бы одного пользователя');
+                return;
+            }
+
+            // Save holiday type filters
+            bitrixHolidayTypes = [];
+            if (document.getElementById('bitrix_federal').checked) bitrixHolidayTypes.push('federal');
+            if (document.getElementById('bitrix_state').checked) bitrixHolidayTypes.push('state');
+            if (document.getElementById('bitrix_ontario').checked) bitrixHolidayTypes.push('ontario');
+
+            // Save to localStorage
+            localStorage.setItem('bitrixWebhookUrl', bitrixWebhookUrl);
+            localStorage.setItem('bitrixTaskTitle', bitrixTaskTitle);
+            localStorage.setItem('bitrixTaskDescription', bitrixTaskDescription);
+            localStorage.setItem('bitrixUsers', JSON.stringify(bitrixUsers));
+            localStorage.setItem('bitrixTaskMode', bitrixTaskMode);
+            localStorage.setItem('bitrixDaysBefore', bitrixDaysBefore);
+            localStorage.setItem('bitrixAutoCreate', bitrixAutoCreate);
+            localStorage.setItem('bitrixHolidayTypes', JSON.stringify(bitrixHolidayTypes));
+
+            const t = translations[currentLanguage];
+            alert(t.bitrixSettingsSaved);
+
+            updateBitrixConnectionStatus();
+
+            // Check and create tasks if auto-create is enabled
+            if (bitrixAutoCreate && bitrixConnected) {
+                checkAndCreateBitrixTasks();
+            }
+        }
+
+        async function testBitrixConnection() {
+            const webhook = document.getElementById('bitrixWebhook').value.trim();
+            const t = translations[currentLanguage];
+
+            if (!webhook) {
+                alert('Please enter webhook URL');
+                return;
+            }
+
+            const testBtn = document.getElementById('bitrixTestBtn');
+            testBtn.disabled = true;
+            testBtn.textContent = '...';
+
+            try {
+                // Test connection by calling user.current method
+                const response = await fetch(`${webhook}/user.current`, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'}
+                });
+
+                const data = await response.json();
+
+                if (data.result) {
+                    bitrixConnected = true;
+                    alert(`${t.bitrixConnectionSuccess}\nПользователь: ${data.result.NAME} ${data.result.LAST_NAME}`);
+                    updateBitrixConnectionStatus();
+                } else {
+                    bitrixConnected = false;
+                    alert(t.bitrixConnectionFailed + ': ' + (data.error_description || 'Unknown error'));
+                }
+            } catch (error) {
+                bitrixConnected = false;
+                alert(t.bitrixConnectionFailed + ': ' + error.message);
+            } finally {
+                testBtn.disabled = false;
+                testBtn.textContent = t.bitrixTestBtn;
+            }
+        }
+
+        function updateBitrixConnectionStatus() {
+            const statusDiv = document.getElementById('bitrixStatus');
+            const statusText = document.getElementById('bitrixStatusText');
+            const toggle = document.getElementById('bitrixToggle');
+            const t = translations[currentLanguage];
+
+            if (bitrixWebhookUrl && bitrixConnected) {
+                statusDiv.className = 'bitrix-connection-status connected';
+                statusText.textContent = t.bitrixStatusConnected;
+                toggle.classList.add('connected');
+            } else {
+                statusDiv.className = 'bitrix-connection-status disconnected';
+                statusText.textContent = t.bitrixStatusDisconnected;
+                toggle.classList.remove('connected');
+            }
+        }
+
+        async function checkAndCreateBitrixTasks() {
+            if (!bitrixConnected || !bitrixAutoCreate || !bitrixWebhookUrl) return;
+
+            const holidays = allHolidaysData;
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+
+            // Filter holidays that need tasks
+            const holidaysNeedingTasks = holidays.filter(h => {
+                const holidayDate = new Date(h.date);
+                const daysUntil = Math.ceil((holidayDate - today) / (1000 * 60 * 60 * 24));
+
+                // Check if in time range
+                if (daysUntil <= 0 || daysUntil > bitrixDaysBefore) return false;
+
+                // Check holiday type
+                let matchesType = false;
+                if (h.isFederalUS && bitrixHolidayTypes.includes('federal')) matchesType = true;
+                if (h.isState && bitrixHolidayTypes.includes('state')) matchesType = true;
+                if (h.isOntario && bitrixHolidayTypes.includes('ontario')) matchesType = true;
+
+                if (!matchesType) return false;
+
+                // Check if already created
+                const taskKey = `${h.date}_${h.name}`;
+                const alreadyCreated = bitrixCreatedTasks.some(t => t.key === taskKey);
+
+                return !alreadyCreated;
+            });
+
+            // Create tasks
+            for (const holiday of holidaysNeedingTasks) {
+                if (bitrixTaskMode === 'multiple') {
+                    // Create separate task for each user
+                    for (const user of bitrixUsers) {
+                        await createBitrixTask(holiday, user);
+                    }
+                } else {
+                    // Create single task with accomplices
+                    await createBitrixTask(holiday, null);
+                }
+            }
+        }
+
+        async function createBitrixTask(holiday, specificUser = null) {
+            const t = translations[currentLanguage];
+
+            try {
+                const holidayDate = new Date(holiday.date);
+                const formattedDate = `${holidayDate.getDate()}.${holidayDate.getMonth() + 1}.${holidayDate.getFullYear()}`;
+
+                // Replace placeholders in title and description
+                const title = bitrixTaskTitle
+                    .replace('{holiday}', holiday.name)
+                    .replace('{date}', formattedDate);
+
+                const description = bitrixTaskDescription
+                    .replace('{holiday}', holiday.name)
+                    .replace('{date}', formattedDate);
+
+                // Calculate deadline (holiday date)
+                const deadline = holidayDate.toISOString().split('T')[0];
+
+                // Prepare task fields
+                let taskFields = {
+                    TITLE: title,
+                    DESCRIPTION: description,
+                    DEADLINE: deadline,
+                    TAGS: ['праздник', 'препцентр', 'автоматическая']
+                };
+
+                // Determine responsible and accomplices
+                if (specificUser) {
+                    // Multiple mode: each user gets their own task
+                    taskFields.RESPONSIBLE_ID = specificUser.id;
+                } else {
+                    // Single mode: one task with accomplices
+                    const responsible = bitrixUsers.find(u => u.role === 'responsible');
+                    taskFields.RESPONSIBLE_ID = responsible ? responsible.id : bitrixUsers[0].id;
+
+                    // Add accomplices
+                    const accomplices = bitrixUsers.filter(u => u.role === 'accomplice' || (u.role !== 'responsible' && u.id !== taskFields.RESPONSIBLE_ID));
+                    if (accomplices.length > 0) {
+                        taskFields.ACCOMPLICES = accomplices.map(u => u.id);
+                    }
+
+                    // Add auditors if any
+                    const auditors = bitrixUsers.filter(u => u.role === 'auditor');
+                    if (auditors.length > 0) {
+                        taskFields.AUDITORS = auditors.map(u => u.id);
+                    }
+                }
+
+                // Create task via Bitrix24 REST API
+                const response = await fetch(`${bitrixWebhookUrl}/tasks.task.add`, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({
+                        fields: taskFields
+                    })
+                });
+
+                const data = await response.json();
+
+                if (data.result && data.result.task) {
+                    const taskId = data.result.task.id;
+                    const taskKey = specificUser
+                        ? `${holiday.date}_${holiday.name}_${specificUser.id}`
+                        : `${holiday.date}_${holiday.name}`;
+
+                    // Save to created tasks log
+                    bitrixCreatedTasks.push({
+                        key: taskKey,
+                        taskId: taskId,
+                        holidayName: holiday.name,
+                        holidayDate: formattedDate,
+                        responsibleId: taskFields.RESPONSIBLE_ID,
+                        createdAt: new Date().toISOString()
+                    });
+
+                    localStorage.setItem('bitrixCreatedTasks', JSON.stringify(bitrixCreatedTasks));
+                    updateBitrixTaskLog();
+
+                    console.log(`${t.bitrixTaskCreated}: ${title} (ID: ${taskId})`);
+                } else {
+                    console.error(`${t.bitrixTaskError}:`, data.error_description || 'Unknown error');
+                }
+            } catch (error) {
+                console.error(`${t.bitrixTaskError}:`, error);
+            }
+        }
+
+        function updateBitrixTaskLog() {
+            const container = document.getElementById('bitrixTaskLog');
+            const t = translations[currentLanguage];
+
+            if (bitrixCreatedTasks.length === 0) {
+                container.innerHTML = `<div class="no-upcoming">${t.bitrixNoTasks}</div>`;
+            } else {
+                let html = '';
+                // Show last 10 tasks
+                const recentTasks = bitrixCreatedTasks.slice(-10).reverse();
+
+                recentTasks.forEach(task => {
+                    const bitrixDomain = bitrixWebhookUrl.split('/rest/')[0];
+                    const taskUrl = `${bitrixDomain}/company/personal/user/1/tasks/task/view/${task.taskId}/`;
+
+                    html += `
+                        <div class="task-log-item">
+                            <div class="task-log-name">${task.holidayName}</div>
+                            <div class="task-log-date">${task.holidayDate}</div>
+                            <a href="${taskUrl}" target="_blank" class="task-log-link">Открыть задачу →</a>
+                        </div>
+                    `;
+                });
+
+                container.innerHTML = html;
+            }
+        }
+
+        function updateBitrixPanelLanguage() {
+            const t = translations[currentLanguage];
+
+            document.getElementById('bitrixText').textContent = t.bitrixText;
+            document.getElementById('bitrixSettingsTitle').textContent = t.bitrixSettingsTitle;
+            document.getElementById('bitrixWebhookLabel').textContent = t.bitrixWebhookLabel;
+            document.getElementById('bitrixWebhookHelp').textContent = t.bitrixWebhookHelp;
+            document.getElementById('bitrixTaskTitleLabel').textContent = t.bitrixTaskTitleLabel;
+            document.getElementById('bitrixTaskTitleHelp').textContent = t.bitrixTaskTitleHelp;
+            document.getElementById('bitrixTaskDescLabel').textContent = t.bitrixTaskDescLabel;
+
+            // Users section
+            document.getElementById('bitrixUsersLabel').textContent = t.bitrixUsersLabel;
+            document.getElementById('bitrixUsersHelp').textContent = t.bitrixUsersHelp;
+            document.getElementById('addUserBtn').textContent = t.addUserBtn;
+            document.getElementById('userIdInput').placeholder = t.userPlaceholder;
+
+            // Task mode section
+            document.getElementById('bitrixTaskModeLabel').textContent = t.bitrixTaskModeLabel;
+            document.getElementById('modeSingleTitle').textContent = t.modeSingleTitle;
+            document.getElementById('modeSingleDesc').textContent = t.modeSingleDesc;
+            document.getElementById('modeMultipleTitle').textContent = t.modeMultipleTitle;
+            document.getElementById('modeMultipleDesc').textContent = t.modeMultipleDesc;
+
+            document.getElementById('bitrixDaysBeforeLabel').textContent = t.bitrixDaysBeforeLabel;
+            document.getElementById('bitrixAutoLabel').textContent = t.bitrixAutoLabel;
+            document.getElementById('bitrixFilterLabel').textContent = t.bitrixFilterLabel;
+            document.getElementById('bitrixTestBtn').textContent = t.bitrixTestBtn;
+            document.getElementById('bitrixSaveBtn').textContent = t.bitrixSaveBtn;
+            document.getElementById('bitrixLogTitle').textContent = t.bitrixLogTitle;
+
+            updateBitrixConnectionStatus();
+            renderBitrixUserList();
+            updateBitrixTaskLog();
+        }
+
+        // --- Функции статистики ---
+
+        function updateStatistics(holidays) {
+            const federalUS = holidays.filter(h => h.isFederalUS);
+            const stateUS = holidays.filter(h => h.isState);
+            const ontario = holidays.filter(h => h.isOntario);
+
+            // Подсчет уникальных дат
+            const uniqueDates = new Set();
+            holidays.forEach(h => uniqueDates.add(h.date));
+
+            // Подсчет длинных уикендов (праздники в пятницу или понедельник)
+            let longWeekends = 0;
+            uniqueDates.forEach(dateStr => {
+                const date = new Date(dateStr);
+                const day = date.getDay();
+                if (day === 1 || day === 5) longWeekends++;
+            });
+
+            document.getElementById('totalHolidays').textContent = uniqueDates.size;
+            document.getElementById('federalCount').textContent = federalUS.length;
+            document.getElementById('regionalCount').textContent = stateUS.length;
+            document.getElementById('ontarioCount').textContent = ontario.length;
+            document.getElementById('longWeekends').textContent = longWeekends;
+        }
+
+        // --- Функции режимов просмотра ---
+
+        function setViewMode(mode) {
+            currentViewMode = mode;
+            localStorage.setItem('viewMode', mode);
+
+            // Update button states
+            document.querySelectorAll('.view-mode-btn').forEach(btn => btn.classList.remove('active'));
+            document.getElementById(`view${mode.charAt(0).toUpperCase() + mode.slice(1)}`).classList.add('active');
+
+            // Show/hide views
+            document.getElementById('calendarContainer').classList.toggle('active', mode === 'grid');
+            document.getElementById('listContainer').classList.toggle('active', mode === 'list');
+            document.getElementById('tableContainer').classList.toggle('active', mode === 'table');
+
+            if (mode === 'list') {
+                generateListView();
+            } else if (mode === 'table') {
+                generateTableView();
+            }
+        }
+
+        function generateListView() {
+            const selectedStates = getSelectedStates();
+            const holidays = getHolidaysForStates(selectedStates);
+
+            const grouped = groupHolidaysByDate(holidays);
+            const t = translations[currentLanguage];
+
+            let html = '';
+            Object.keys(grouped).sort().forEach(dateStr => {
+                const date = new Date(dateStr);
+                const dayOfWeek = dayNames[date.getDay()];
+                const day = date.getDate();
+                const month = monthNames[date.getMonth()];
+
+                const dayHolidays = grouped[dateStr];
+
+                dayHolidays.forEach(h => {
+                    let type = '';
+                    let typeClass = '';
+                    if (h.isOntario) {
+                        type = t.holidayType.ontario;
+                        typeClass = 'badge-ontario';
+                    } else if (h.isFederalUS) {
+                        type = t.holidayType.federal;
+                        typeClass = 'badge-federal';
+                    } else if (h.isState) {
+                        type = t.holidayType.state;
+                        typeClass = 'badge-state';
+                    }
+
+                    html += `
+                        <div class="holiday-list-item" data-type="${typeClass}">
+                            <div class="holiday-date-info">
+                                <div class="holiday-date-box">
+                                    <div class="holiday-day">${day}</div>
+                                    <div class="holiday-month">${month.substring(0, 3)}</div>
+                                </div>
+                                <div class="holiday-details">
+                                    <div class="holiday-name">${h.name}</div>
+                                    <div class="holiday-type">${dayOfWeek}, ${day} ${month} • ${type}</div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                });
+            });
+
+            document.getElementById('holidayList').innerHTML = html || '<p style="text-align: center; padding: 40px; color: var(--text-secondary);">Нет праздников для отображения</p>';
+        }
+
+        function generateTableView() {
+            const selectedStates = getSelectedStates();
+            const holidays = getHolidaysForStates(selectedStates);
+            const grouped = groupHolidaysByDate(holidays);
+            const t = translations[currentLanguage];
+
+            let html = `
+                <table>
+                    <thead>
+                        <tr>
+                            <th>${t.tableHeaders[0]}</th>
+                            <th>${t.tableHeaders[1]}</th>
+                            <th>${t.tableHeaders[2]}</th>
+                            <th>${t.tableHeaders[3]}</th>
+                            <th>${t.tableHeaders[4]}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+
+            Object.keys(grouped).sort().forEach(dateStr => {
+                const date = new Date(dateStr);
+                const dayOfWeek = dayNames[date.getDay()];
+                const formatted = `${date.getDate()} ${monthNames[date.getMonth()]} 2026`;
+
+                grouped[dateStr].forEach(h => {
+                    let type = '';
+                    let typeClass = '';
+                    let region = '';
+
+                    if (h.isOntario) {
+                        type = t.holidayType.ontario;
+                        typeClass = 'badge-ontario';
+                        region = 'Ontario, Canada';
+                    } else if (h.isFederalUS) {
+                        type = t.holidayType.federal;
+                        typeClass = 'badge-federal';
+                        region = 'All Selected States';
+                    } else if (h.isState) {
+                        type = t.holidayType.state;
+                        typeClass = 'badge-state';
+                        region = h.stateName || h.state;
+                    }
+
+                    html += `
+                        <tr>
+                            <td>${formatted}</td>
+                            <td>${dayOfWeek}</td>
+                            <td><strong>${h.name}</strong></td>
+                            <td><span class="table-badge ${typeClass}">${type}</span></td>
+                            <td>${region}</td>
+                        </tr>
+                    `;
+                });
+            });
+
+            html += '</tbody></table>';
+            document.getElementById('holidayTable').innerHTML = html;
+        }
+
+        function groupHolidaysByDate(holidays) {
+            const grouped = {};
+            holidays.forEach(h => {
+                const dateKey = h.observed || h.date;
+                if (!grouped[dateKey]) grouped[dateKey] = [];
+                grouped[dateKey].push(h);
+            });
+            return grouped;
+        }
+
+        // --- Функции поиска и фильтрации ---
+
+        function filterHolidays() {
+            const searchTerm = document.getElementById('holidaySearch').value.toLowerCase();
+
+            if (currentViewMode === 'list') {
+                const items = document.querySelectorAll('.holiday-list-item');
+                items.forEach(item => {
+                    const text = item.textContent.toLowerCase();
+                    const matchesSearch = text.includes(searchTerm);
+                    const matchesFilter = checkFilterMatch(item);
+                    item.style.display = (matchesSearch && matchesFilter) ? 'flex' : 'none';
+                });
+            } else if (currentViewMode === 'table') {
+                const rows = document.querySelectorAll('.holiday-table tbody tr');
+                rows.forEach(row => {
+                    const text = row.textContent.toLowerCase();
+                    const matchesSearch = text.includes(searchTerm);
+                    const badge = row.querySelector('.table-badge');
+                    const matchesFilter = checkBadgeFilter(badge);
+                    row.style.display = (matchesSearch && matchesFilter) ? '' : 'none';
+                });
+            }
+        }
+
+        function toggleFilter(type) {
+            activeFilter = type;
+            document.querySelectorAll('.filter-chip').forEach(chip => {
+                chip.classList.toggle('active', chip.dataset.filter === type);
+            });
+            filterHolidays();
+        }
+
+        function checkFilterMatch(item) {
+            if (activeFilter === 'all') return true;
+            const type = item.dataset.type;
+            if (activeFilter === 'federal') return type === 'badge-federal';
+            if (activeFilter === 'state') return type === 'badge-state';
+            if (activeFilter === 'ontario') return type === 'badge-ontario';
+            return true;
+        }
+
+        function checkBadgeFilter(badge) {
+            if (activeFilter === 'all') return true;
+            if (!badge) return false;
+            const classes = badge.className;
+            if (activeFilter === 'federal') return classes.includes('badge-federal');
+            if (activeFilter === 'state') return classes.includes('badge-state');
+            if (activeFilter === 'ontario') return classes.includes('badge-ontario');
+            return true;
+        } 
 
         // --- Dropdown и Поиск Функции ---
         
@@ -657,12 +2743,14 @@
         function updateDropdownToggleText(selectedCount) {
             const totalStates = Object.keys(states).length;
             const toggleButton = document.getElementById('dropdownToggle');
+            const t = translations[currentLanguage];
+
             if (selectedCount === totalStates) {
-                toggleButton.textContent = 'Выбраны все штаты';
+                toggleButton.textContent = t.allStatesSelected;
             } else if (selectedCount > 0) {
-                toggleButton.textContent = `Выбрано штатов: ${selectedCount} / ${totalStates}`;
+                toggleButton.textContent = `${t.statesSelected}: ${selectedCount} / ${totalStates}`;
             } else {
-                toggleButton.textContent = 'Выберите штаты...';
+                toggleButton.textContent = t.selectStatesPlaceholder;
             }
         }
 
@@ -781,19 +2869,39 @@
 
             document.getElementById('dropdownMenu').classList.remove('show');
 
+            const t = translations[currentLanguage];
+            const noSelectionMsg = currentLanguage === 'ru'
+                ? 'Пожалуйста, выберите хотя бы один штат США или Онтарио для отображения праздников'
+                : 'Please select at least one US state or Ontario to display holidays';
+
             if (selectedStates.length === 0 && !isONSelected) {
-                container.innerHTML = '<div class="no-selection">Пожалуйста, выберите хотя бы один штат США или Онтарио для отображения праздников</div>';
+                container.innerHTML = `<div class="no-selection" style="text-align: center; padding: 40px; color: var(--text-secondary);">${noSelectionMsg}</div>`;
                 return;
             }
 
             const holidays = getHolidaysForStates(selectedStates);
-            let html = '';
 
+            // Update statistics
+            updateStatistics(holidays);
+
+            // Update calendar grid
+            let html = '';
             for (let month = 0; month < 12; month++) {
                 html += generateMonthCalendar(2026, month, holidays);
             }
-
             container.innerHTML = html;
+
+            // Update other views
+            if (currentViewMode === 'list') {
+                generateListView();
+            } else if (currentViewMode === 'table') {
+                generateTableView();
+            }
+
+            // Check and create Bitrix24 tasks if enabled
+            if (bitrixAutoCreate && bitrixConnected) {
+                checkAndCreateBitrixTasks();
+            }
         }
 
         function generateMonthCalendar(year, month, holidays) {
@@ -986,9 +3094,53 @@
             }
         };
 
+        // --- Инициализация при загрузке ---
 
-        initStates();
-        updateCalendar();
+        function initApp() {
+            // Apply saved theme
+            document.documentElement.setAttribute('data-theme', currentTheme);
+
+            // Apply saved language
+            updateLanguage();
+
+            // Apply saved view mode
+            setViewMode(currentViewMode);
+
+            // Initialize states
+            initStates();
+
+            // Update calendar
+            updateCalendar();
+
+            // Initialize Bitrix24
+            updateBitrixConnectionStatus();
+
+            // Close panels on outside click
+            document.addEventListener('click', function(event) {
+                const notifPanel = document.getElementById('notificationPanel');
+                const notifToggle = document.getElementById('notificationToggle');
+                if (notifPanel.classList.contains('show') &&
+                    !notifPanel.contains(event.target) &&
+                    !notifToggle.contains(event.target)) {
+                    closeNotificationPanel();
+                }
+
+                const bitrixPanel = document.getElementById('bitrixPanel');
+                const bitrixToggle = document.getElementById('bitrixToggle');
+                if (bitrixPanel.classList.contains('show') &&
+                    !bitrixPanel.contains(event.target) &&
+                    !bitrixToggle.contains(event.target)) {
+                    closeBitrixPanel();
+                }
+            });
+        }
+
+        // Start app when DOM is ready
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initApp);
+        } else {
+            initApp();
+        }
     </script>
 </body>
 </html>
